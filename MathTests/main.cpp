@@ -2,8 +2,8 @@
 #include <iostream>
 
 #include "Test.h"
-#include <cassert>
-#include <iostream>
+#include "vec2.h"
+#include "vec3.h"
 
 void main()
 {
@@ -27,11 +27,33 @@ void main()
 	assert(InnerProd(init3(2, 3, 4), init3(4, 3, 2)) == 25);
 	assert(InnerProd(init3(1, 2, 3), init3(1, 2, 3)) == 14);
 
-	//hel if i kno.
-	//assert(DistFromPlane(initp(), init3()) == )
+	assert(DistFromPlane(initp(1, 0, 0, 0), init3(1, 0, 0)) == 1);
+	assert(DistFromPlane(initp(1,2,2,1), init3(1,1,1)) == 2);
 
-	//¯\_(ツ)_/¯
-	//assert(CubicBezier() == )
+	//No thanks
+	/*assert(CubicBezier(0, init3(0, 0, 0), init3(1, 0, 0), init3(2, 0, 0), init3(4, 0, 0)).x == 0);
+	assert(CubicBezier(0, init3(0, 0, 0), init3(1, 0, 0), init3(2, 0, 0), init3(4, 0, 0)).x == 4);
+	assert(CubicBezier(0, init3(0, 0, 0), init3(1, 0, 0), init3(2, 0, 0), init3(4, 0, 0)).z == 0);*/
+
+	//Vector stuff
+	assert((vInit2(1,2) + vInit2(2,1)) == vInit2(3,3));
+	assert((vInit2(1, 2) - vInit2(2, 1)) == vInit2(-1, 1));
+	assert((vInit2(1, 2) * 2) == vInit2(2, 4));
+	assert((2 * vInit2(2, 1)) == vInit2(4, 2));
+	assert((vInit2(1, 2) / vInit2(2, 1)) == vInit2(.5, 2));
+
+	assert((vInit2(1, 2) += vInit2(2, 1)) == vInit2(3, 3));
+	assert((vInit2(1, 2) -= vInit2(2, 1)) == vInit2(-1, 1));
+	assert((2 *= vInit2(2, 1)) == vInit2(4, 2));
+	assert((vInit2(1, 2) *= 2) == vInit2(2, 4));
+	assert((vInit2(1, 2) /= vInit2(2, 1)) == vInit2(.5, 2));
+
+	assert(vInit2(1, 2) == vInit2(1, 2));
+	assert(vInit2(1, 2) != vInit2(2, 1));
+
+	//assert(magnitude(vInit2(1, 1)) == sqrt(2));
+
+	assert((vInit3(1, 2, 3) + vInit3(3, 2, 1)) == vInit3(4, 4, 4));
 
 	printf("All good :D");
 

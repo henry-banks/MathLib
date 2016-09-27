@@ -44,4 +44,4 @@ float InnerProd(Point3D p, Point3D q);
 //Returns distance of point from given plane
 float DistFromPlane(Plane p, Point3D x);
 //Returns something that I assume has to do with bezier curves but I don't know what
-float CubicBezier(float t, float p0, float p1, float p2, float p3);
+Point3D CubicBezier(float t, Point3D p0, Point3D p1, Point3D p2, Point3D p3);
