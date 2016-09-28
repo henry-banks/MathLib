@@ -28,3 +28,10 @@ bool operator==(const vec3 &lhs, const vec3 &rhs);
 bool operator!=(const vec3 &lhs, const vec3 &rhs);
 
 float magnitude(const vec3 &v);
+
+vec3 normalize(const vec3 &v);
+
+float dotProd(const vec3 &rhs, const vec3 &lhs);
+float angleBetween(const vec3 &rhs, const vec3 &lhs);
+
+vec3 crossProd(const vec3 &lhs, const vec3 &rhs);

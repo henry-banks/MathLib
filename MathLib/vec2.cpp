@@ -1,4 +1,5 @@
 #include "vec2.h"
+#include "flops.h"
 #include <math.h>
 
 vec2 vInit2(float inX, float inY)
@@ -87,7 +88,7 @@ vec2 & operator/=(vec2 & lhs, vec2 & rhs)
 
 bool operator==(const vec2 & lhs, const vec2 & rhs)
 {
-	return lhs.x == rhs.x && lhs.y == rhs.y;
+	return fequals(lhs.x, rhs.x) && fequals(lhs.y, rhs.y);
 }
 
 bool operator!=(const vec2 & lhs, const vec2 & rhs)
@@ -97,6 +98,53 @@ bool operator!=(const vec2 & lhs, const vec2 & rhs)
 
 float magnitude(const vec2 & v)
 {
-	float h = sqrt((v.x*v.x) + (v.y*v.y));
+	//Find hypotenuse
+	float h = sqrt(powf(v.x, 2) + powf(v.y, 2));
 	return h;
 }
+
+vec2 normalize(const vec2 & v)
+{
+	vec2 out;
+	//I can't use vec2 / operator since v is a constant
+	out.x = v.x / magnitude(v);
+	out.y = v.y / magnitude(v);
+
+	return out;
+}
+
+float dotProd(const vec2 & rhs, const vec2 & lhs)
+{
+	float out = rhs.x*lhs.x + rhs.y * lhs.y;
+	return out;
+}
+
+float angleBetween(const vec2 & rhs, const vec2 & lhs)
+{
+	float out = acos(dotProd(normalize(rhs), normalize(lhs)));
+	return out;
+}
+
+vec2 perp(const vec2 & v)
+{
+	vec2 out;
+	out.x = v.y;
+	out.y = -v.x;
+
+	return out;
+}
+
+float angle(const vec2 & v)
+{
+	return atan2f(v.y, v.x);
+}
+
+vec2 fromAngle(float a)
+{
+	vec2 out;
+	out.x = cos(a);
+	out.y = sin(a);
+
+	return out;
+}
+

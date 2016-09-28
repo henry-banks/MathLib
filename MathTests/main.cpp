@@ -4,6 +4,7 @@
 #include "Test.h"
 #include "vec2.h"
 #include "vec3.h"
+#include "flops.h"
 
 void main()
 {
@@ -51,9 +52,43 @@ void main()
 	assert(vInit2(1, 2) == vInit2(1, 2));
 	assert(vInit2(1, 2) != vInit2(2, 1));
 
-	//assert(magnitude(vInit2(1, 1)) == sqrt(2));
-
 	assert((vInit3(1, 2, 3) + vInit3(3, 2, 1)) == vInit3(4, 4, 4));
+	assert((vInit3(1, 2, 3) - vInit3(3, 2, 1)) == vInit3(-2, 0, 2));
+	assert(-vInit3(1, 2, 3) == vInit3(-1, -2, -3));
+	assert((vInit3(1, 2, 3) * 5) == vInit3(5, 10, 15));
+	assert((3 * vInit3(3, 2, 1)) == vInit3(9, 6, 3));
+	assert((vInit3(1, 2, 3) / vInit3(2, 2, 1)) == vInit3(.5, 1, 3));
+
+	assert(magnitude(normalize(vInit2(5, 3))) == 1);
+	assert(magnitude(normalize(vInit3(5, 3, 6))) == 1);
+	
+	assert(fequals(1, .99999999f));
+	assert(!fequals(1, .99999f));
+
+	assert(fequals(magnitude(normalize(vInit2(1, 1))), 1));
+
+	assert(fequals(dotProd(vec2{ 5,4 }, vec2{ 1,0 }), 5));
+	assert(fequals(dotProd(vec2{ 5,4 }, vec2{ 0,1 }), 4));
+
+	assert(fequals(angleBetween(vec2{ 1,0 }, vec2{ 0,1 }), deg2rad(90)));
+	assert(fequals(angleBetween(vec2{ 1,1 }, vec2{ 0,1 }), deg2rad(45)));
+	assert(fequals(angleBetween(vec2{ 1,1 }, vec2{ 0,1 }), angle(vec2{ 1,1 })));
+
+	assert((fromAngle(0) == vec2{ 1,0 }));
+	assert((fromAngle(deg2rad(90)) == vec2{ 0,1 }));
+
+	assert((crossProd(vec3{ 1,0,0 }, vec3{ 0,1,0 }) == vec3{ 0,0,1 }));
+	assert((crossProd(vec3{ 0,1,0 }, vec3{ 1,0,0 }) == vec3{ 0,0,-1 }));
+
+	//printf("%f %f", angleBetween(vec2{ 0,1 }, vec2{ 0,1 }), deg2rad(90));
+
+	/*printf("%f\n", vInit2(5, 3).x);
+	printf("%f\n\n", vInit2(5, 3).y);
+
+	printf("%f\n", normalize(vInit3(5, 3, 6)).x);
+	printf("%f\n", normalize(vInit3(5, 3, 6)).y);
+	printf("%f\n", normalize(vInit3(5, 3, 6)).z);
+	printf("%f\n", magnitude(normalize(vInit3(5, 3,6))));*/
 
 	printf("All good :D");
 
