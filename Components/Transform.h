@@ -4,6 +4,8 @@ class Transform
 {
 public:
 	Transform();
+	Transform(float x, float y);
+	Transform(float x, float y, float w, float h, float s);
 	~Transform();
 
 	vec2 pos;
@@ -14,6 +16,6 @@ public:
 	vec2 getDir();
 	void setDir(const vec2 &inDir);
 
-	void debugDraw();
+	void debugDraw(int c);
 };
 
