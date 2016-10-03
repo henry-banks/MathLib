@@ -6,3 +6,11 @@ bool fequals(float lhs, float rhs);
 
 float deg2rad(float deg);
 float rad2deg(float rad);
+
+float linearHalf(float x);
+
+float slowToFast(float x);
+float fastToSlow(float x);
+float upDown(float x);
+float bounce(float x);
+float parabolicBump(float x);
