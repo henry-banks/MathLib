@@ -90,6 +90,13 @@ void main()
 	printf("%f\n", normalize(vInit3(5, 3, 6)).z);
 	printf("%f\n", magnitude(normalize(vInit3(5, 3,6))));*/
 
+	//LERPS AND CURVES
+	assert(fequals(lerp(4, 23479, 0), 4));
+	assert(fequals(lerp(4, 23479, 1), 23479));
+	assert(fequals(lerp(0, 1, 0.5), 0.5));
+
+	assert(fequals(QuadBezier());
+
 	printf("All good :D");
 
 	getchar();

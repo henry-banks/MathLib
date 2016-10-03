@@ -50,8 +50,8 @@ void main()
 			float x1 = i / 100.f;
 			float x2 = (i + 1) / 100.f;
 
-			float y1 = parabolicBump(x1);
-			float y2 = parabolicBump(x2);
+			float y1 = QuadBezier(0,-0.3f,1,x1);
+			float y2 = QuadBezier(0, 0.3f, 1, x1);
 
 			x1 *= W;
 			x2 *= W;
