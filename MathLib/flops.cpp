@@ -104,16 +104,7 @@ float CardinalSpline(float point1, float point2, float point3, float tight, floa
 	float tan1 = (point2 - point1) * tight;
 	float tan2 = (point3 - point2) * tight;
 
-	float asq = alpha * alpha;
-	float acub = asq * alpha;
-
-	float h00 = 2 * acub - 3 * acub + 1;
-	float h01 = -2 * acub + 3 * asq;
-	float h10 = acub - 2 * asq + alpha;
-	float h11 = acub - asq;
-
-	float point = h00 * point1 + h10 * tan1 + h01 * point2 + h11 * tan2;
-	return point;
+	return HermiteSpline(point1, point3, tan1, tan2, alpha);
 }
 
 float CatRomSpline(float start, float mid, float end, float tight)
@@ -135,17 +126,18 @@ float CatRomSpline(float start, float mid, float end, float tight)
 
 vec2 lerp(vec2 a, vec2 b, float alpha)
 {
-	return alpha * b + (1-alpha)*a;
+	vec2 retval;
+	retval.x = lerp(a.x, b.x, alpha);
+	retval.y = lerp(a.y, b.y, alpha);
+	return retval;
 }
 
 vec2 QuadBezier(vec2 a, vec2 b, vec2 c, float alpha)
 {
-	//Lerp form point a to point b
-	vec2 mid1 = lerp(a, b, alpha);
-	//lerp from point b to point c
-	vec2 mid2 = lerp(b, c, alpha);
-
-	return lerp(mid1, mid2, alpha);
+	vec2 retval;
+	retval.x = QuadBezier(a.x, b.x, c.x, alpha);
+	retval.y = QuadBezier(a.y, b.y, c.y, alpha);
+	return retval;
 }
 
 vec2 HermiteSpline(vec2 point1, vec2 point2, vec2 tan1, vec2 tan2, float alpha)
@@ -160,7 +152,9 @@ vec2 HermiteSpline(vec2 point1, vec2 point2, vec2 tan1, vec2 tan2, float alpha)
 	float h10 = tcub - 2 * tsq + alpha;
 	float h11 = tcub - tsq;
 
-	vec2 point = h00 * point1 + h10 * tan1 + h01 * point2 + h11 * tan2;
+	vec2 point;
+	point.x = h00 * point1.x + h10 * tan1.x + h01 * point2.x + h11 * tan2.x;
+	point.y = h00 * point1.y + h10 * tan1.y + h01 * point2.y + h11 * tan2.y;
 
 	return point;
 }
@@ -170,31 +164,10 @@ vec2 CardinalSpline(vec2 point1, vec2 point2, vec2 point3, float tight, float al
 	vec2 tan1 = (point2 - point1) * tight;
 	vec2 tan2 = (point3 - point2) * tight;
 
-	float asq = alpha * alpha;
-	float acub = asq * alpha;
-
-	float h00 = 2 * acub - 3 * acub + 1;
-	float h01 = -2 * acub + 3 * asq;
-	float h10 = acub - 2 * asq + alpha;
-	float h11 = acub - asq;
-
-	vec2 point = h00 * point1 + h10 * tan1 + h01 * point2 + h11 * tan2;
-	return point;
+	return HermiteSpline(point1, point2, tan1, tan2, alpha);
 }
 
-vec2 CatRomSpline(vec2 start, vec2 mid, vec2 end, float tight)
+vec2 CatRomSpline(vec2 start, vec2 mid, vec2 end, float alpha)
 {
-	vec2 tan1 = (mid - start) * tight;
-	vec2 tan2 = (mid - end) * tight;
-
-	float asq = 0.5 * 0.5;
-	float acub = asq * 0.5;
-
-	float h00 = 2 * acub - 3 * acub + 1;
-	float h01 = -2 * acub + 3 * asq;
-	float h10 = acub - 2 * asq + 0.5;
-	float h11 = acub - asq;
-
-	vec2 point = h00 * start + h10 * tan1 + h01 * mid + h11 * tan2;
-	return point;
+	return CardinalSpline(start, mid, end, .5, alpha);
 }

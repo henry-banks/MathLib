@@ -30,4 +30,4 @@ float QuadBezier(float a, float b, float c, float alpha);
 //This is all math
 float HermiteSpline(float point1, float point2, float tan1, float tan2, float alpha);
 float CardinalSpline(float point1, float point2, float point3, float tight, float alpha);
-float CatRomSpline(float start, float mid, float end, float tight);
+float CatRomSpline(float start, float mid, float end, float alpha);

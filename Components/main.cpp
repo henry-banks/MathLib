@@ -9,6 +9,7 @@ using namespace sfw;
 void main()
 {
 	float W = 1200, H = 1200;
+	float steps = 100;
 
 	//initContext(800,400);
 	initContext(W, H);
@@ -25,6 +26,10 @@ void main()
 	
 
 	float ang_vec = 0;
+
+	vec2 start = { 200, 300 },
+		end = { 900, 800 },
+		mid = { 0, 1100 };
 
 	while (stepContext())
 	{
@@ -45,20 +50,20 @@ void main()
 			drawLine(x1, y1+200, x2, y2+200);
 		}*/
 
-		for (int i = 0; i < 100; ++i)
+		for (int i = 0; i < steps; ++i)
 		{
-			float x1 = i / 100.f;
-			float x2 = (i + 1) / 100.f;
+			float x1 = i / steps;
+			float x2 = (i + 1) / steps;
 
-			float y1 = QuadBezier(0,-0.3f,1,x1);
-			float y2 = QuadBezier(0, 0.3f, 1, x1);
+			vec2 y1 = QuadBezier(start, mid, end, x1);
+			vec2 y2 = QuadBezier(start, mid, end, x2);
 
 			x1 *= W;
 			x2 *= W;
 			y1 *= H;
 			y2 *= H;
 
-			drawLine(x1, y1, x2, y2);
+			drawLine(y1.x, y1.y, y2.x, y2.y);
 		}
 
 		/*ang_vec += getDeltaTime();

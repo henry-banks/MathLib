@@ -95,7 +95,10 @@ void main()
 	assert(fequals(lerp(4, 23479, 1), 23479));
 	assert(fequals(lerp(0, 1, 0.5), 0.5));
 
-	assert(fequals(QuadBezier());
+	assert(fequals(QuadBezier(15, 40, 21, 0), 15));
+	assert(fequals(QuadBezier(15, 40, 21, 1), 21));
+
+
 
 	printf("All good :D");
 
