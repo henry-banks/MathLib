@@ -53,6 +53,6 @@ void Transform::debugDraw(int c)
 	vec2 dirEnd = pos + getDir()*scl.x;
 	vec2 upEnd = pos + perp(getDir()) * scl.y;
 
-	drawLine(pos.x, pos.y, dirEnd.x, dirEnd.y, c);
-	//drawLine(pos.x, pos.y, upEnd.x, upEnd.y, c);
+	drawLine(pos.x, pos.y, dirEnd.x, dirEnd.y, RED);
+	drawLine(pos.x, pos.y, upEnd.x, upEnd.y, GREEN);
 }

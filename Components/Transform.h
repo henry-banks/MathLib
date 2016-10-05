@@ -10,7 +10,7 @@ public:
 
 	vec2 pos;
 	vec2 scl;
-
+	//AKA 'facing'
 	float rotAngle;
 
 	vec2 getDir();
@@ -18,4 +18,3 @@ public:
 
 	void debugDraw(int c);
 };
-
