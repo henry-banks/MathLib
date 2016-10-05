@@ -44,11 +44,14 @@ void main()
 		else if (playerTransform.pos.y > H) playerTransform.pos.y = 0;
 
 		control.update(playerShip);
-		playerShip.update(playerBody, deltaTime);
+		playerShip.update(playerTransform, playerBody);
 		playerBody.integrate(playerTransform, deltaTime);
+
+		//std::cout << playerTransform.rotAngle << "\n";
 
 		//Main draw function
 		playerTransform.debugDraw(RED);
+		playerBody.debugDraw(playerTransform);
 	}
 
 	termContext();

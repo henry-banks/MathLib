@@ -61,6 +61,14 @@ vec2 operator/(const vec2 & lhs, const vec2 & rhs)
 	return out;
 }
 
+vec2 operator/(const vec2 & lhs, float rhs)
+{
+	vec2 out;
+	out.x = lhs.x / rhs;
+	out.y = lhs.y / rhs;
+	return out;
+}
+
 vec2 & operator+=(vec2 & lhs, const vec2 & rhs)
 {
 	return lhs = lhs + rhs;

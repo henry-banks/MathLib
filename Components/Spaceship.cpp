@@ -1,24 +1,23 @@
 #include "Spaceship.h"
 #include "sfwdraw.h"
+#include <iostream>
 
 using namespace sfw;
 
 
 Spaceship::Spaceship()
 {
-	/*thrust = 0;
-	maxThrust = 100;
-	thrustSpeed = 1;
-
-	turn = 0;
-	maxTurn = 100;
-	turnSpeed = 1;*/
-
 	vertThrust = 0;
 	horizThrust = 0;
+	breakPower = 4.0f;
+	stopAction = 0.0f;
+	
 
-	speed = 100;
+	speed = 500;
 	maxSpeed = 1000;
+
+	turnSpeed = 4.f;
+	
 }
 
 
@@ -29,28 +28,31 @@ Spaceship::~Spaceship()
 void Spaceship::doThrust(float val)
 {
 	vertThrust = val;
-
-	/*if (getKey('W')) vertThrust += 1;
-	if (getKey('S')) vertThrust -= 1;*/
 }
 
 void Spaceship::doTurn(float val)
 {
 	horizThrust = val;
-
-	/*if (getKey('A')) horizThrust -= 1;
-	if (getKey('D')) horizThrust += 1;*/
 }
 
-void Spaceship::update(RigidBody & rigid, float deltaTime)
+void Spaceship::doStop(float val)
 {
-	/*doThrust();
-	doTurn();*/
+	stopAction += val;
+}
 
-	rigid.acc.y = vertThrust * speed;
-	rigid.acc.x = horizThrust * speed;
 
-	//If the ship is goign faster than the max speed...
+void Spaceship::update(const Transform &trans, RigidBody & rigid)
+{
+	//Move in the direction the transform is facing
+	rigid.addForce(trans.getUp() * speed * vertThrust);
+	rigid.addTorque(turnSpeed * horizThrust);
+
+	//Stop ship (in 1 sec)
+	rigid.addForce(-rigid.velocity * breakPower * stopAction);
+	//rigid.addTorque(-rigid.angVel * breakPower * stopAction);
+	//std::cout << -rigid.angVel * breakPower * stopAction << "\n";
+
+	//If the ship is going faster than the max speed...
 	if (magnitude(rigid.velocity) > maxSpeed)
 	{
 		//Get the direction
@@ -60,12 +62,5 @@ void Spaceship::update(RigidBody & rigid, float deltaTime)
 		rigid.velocity = dir * maxSpeed;
 	}
 
-	//Comment this bit out for funtimes :D
-	vertThrust = 0;
-	horizThrust = 0;
-
-	/*if (getKey('W')) rigid.acc.y += 10;
-	if (getKey('S')) rigid.acc.y -= 10;
-	if (getKey('D')) rigid.acc.x += 10;
-	if (getKey('A')) rigid.acc.x -= 10;*/
+	horizThrust = vertThrust = 0;
 }

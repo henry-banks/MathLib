@@ -1,11 +1,23 @@
 #include "RigidBody.h"
+#include "sfwdraw.h"
 
-
+using namespace sfw;
 
 RigidBody::RigidBody()
 {
+	mass = 1.0f;
+	drag = .25f;
+	angDrag = 5.25f;
+
+	force = vec2{ 0,0 };
+	impulse = vec2{ 0,0 };
 	acc = vec2{ 0,0 };
 	velocity = vec2{ 0,0 };
+
+	force = vec2{ 0,0 };
+	impulse = vec2{ 0,0 };
+	torque = 0;
+
 	angVel = 0.0f;
 	angAcc = 0.0f;
 }
@@ -15,27 +27,47 @@ RigidBody::~RigidBody()
 {
 }
 
-void RigidBody::addForce(const vec2 & force)
+void RigidBody::addForce(const vec2 & inForce)
 {
-	acc += force;
+	force += inForce;
 }
 
-void RigidBody::addImpulse(const vec2 & impulse)
+void RigidBody::addImpulse(const vec2 & inImpulse)
 {
-	velocity += impulse;
+	impulse += inImpulse;
 }
 
-void RigidBody::addTorque(float torque)
+void RigidBody::addTorque(float inTorque)
 {
-	angAcc += torque;
+	torque = inTorque;
 }
 
 void RigidBody::integrate(Transform & trans, float deltaTime)
 {
 	//Magic math
-	velocity += acc * deltaTime;
-	angVel = angVel + angAcc * deltaTime;
+	acc = force / mass;
+	velocity += acc*deltaTime + impulse / mass;
+	trans.pos += velocity * deltaTime;
+	force = impulse = { 0,0 };
 
-	trans.pos = trans.pos + velocity * deltaTime;
-	trans.rotAngle = trans.rotAngle + angVel * deltaTime;
+	force = -velocity * drag;
+
+	angAcc = torque / mass;
+	angVel += angAcc * deltaTime;
+	trans.rotAngle += angVel * deltaTime;
+	torque = 0;
+
+	torque = -angVel * angDrag;
+}
+
+void RigidBody::debugDraw(const Transform & trans)
+{
+	vec2 p = trans.pos;
+	vec2 v = p + velocity;
+	vec2 a = acc + p;
+
+	//Velocity
+	drawLine(p.x, p.y, v.x, v.y, CYAN);
+	//Acceleration
+	drawLine(p.x, p.y, a.x, a.y, MAGENTA);
 }

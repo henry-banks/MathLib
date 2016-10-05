@@ -13,8 +13,9 @@ public:
 	//AKA 'facing'
 	float rotAngle;
 
-	vec2 getDir();
+	vec2 getDir() const;
 	void setDir(const vec2 &inDir);
+	vec2 getUp() const;
 
 	void debugDraw(int c);
 };
