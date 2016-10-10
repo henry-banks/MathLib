@@ -30,14 +30,6 @@ void main()
 	{
 		float deltaTime = getDeltaTime();
 
-		/*if (playerBody.velocity.y < maxSpeed && getKey('W')) playerBody.velocity.y += 10;
-		if (playerBody.velocity.y > -1 * maxSpeed && getKey('S')) playerBody.velocity.y -= 10;
-		if (playerBody.velocity.x < maxSpeed && getKey('D')) playerBody.velocity.x += 10;
-		if (playerBody.velocity.x > -1 * maxSpeed && getKey('A')) playerBody.velocity.x -= 10;
-
-		if (getKey('Q')) playerBody.angVel += 1.0f;
-		if (getKey('E')) playerBody.angVel -= 1.0f;*/
-
 		if (playerTransform.pos.x < 0) playerTransform.pos.x = W;
 		else if (playerTransform.pos.x > W) playerTransform.pos.x = 0;
 		if (playerTransform.pos.y < 0) playerTransform.pos.y = H;
