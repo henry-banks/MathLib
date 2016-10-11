@@ -5,6 +5,7 @@
 #include "vec2.h"
 #include "vec3.h"
 #include "flops.h"
+#include "mat2.h"
 
 void main()
 {
@@ -97,8 +98,26 @@ void main()
 
 	assert(fequals(QuadBezier(15, 40, 21, 0), 15));
 	assert(fequals(QuadBezier(15, 40, 21, 1), 21));
+	
 
+	mat2 m0 = mat2{ 0,0,0,0 };
+	mat2 mI = mat2Identity();
+	mat2 t0 = mat2{ 4,3,2,1 };
 
+	assert(m0 == m0);
+	assert(mI * 2 == 2 * mI);
+	assert((mI * 2 == mat2{ 2,0,0,2 }));
+	assert(mI + m0 == mI);
+	assert(mI - mI == m0);
+	assert(mI * -1 == -mI);
+
+	assert(mI * mI == mI);
+	assert((mat2{ 1,2,3,4 }) * mI == (mat2{ 1,2,3,4 }));
+
+	assert(transpose(mI) == mI);
+	assert(inverse(mI) == mI);
+
+	assert(t0 * inverse(t0) == mI);
 
 	printf("All good :D");
 

@@ -31,7 +31,10 @@ vec2 operator-(const vec2 & lhs, const vec2 & rhs)
 
 vec2 operator-(const vec2 & v)
 {
-	return vec2();
+	vec2 out;
+	out.x = -v.x;
+	out.y = -v.y;
+	return out;
 }
 
 vec2 operator*(const vec2 & lhs, float rhs)
@@ -156,3 +159,12 @@ vec2 fromAngle(float a)
 	return out;
 }
 
+float vec2::operator[](unsigned idx) const
+{
+	return v[idx];
+}
+
+float & vec2::operator[](unsigned idx)
+{
+	return v[idx];
+}
