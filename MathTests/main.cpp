@@ -6,6 +6,7 @@
 #include "vec3.h"
 #include "flops.h"
 #include "mat2.h"
+#include "mat3.h"
 
 void main()
 {
@@ -100,26 +101,86 @@ void main()
 	assert(fequals(QuadBezier(15, 40, 21, 1), 21));
 	
 
-	mat2 m0 = mat2{ 0,0,0,0 };
-	mat2 mI = mat2Identity();
-	mat2 t0 = mat2{ 4,3,2,1 };
+	mat2 a0 = mat2{ 0,0,0,0 };
+	mat2 aI = mat2Identity();
+	mat2 r0 = mat2{ 4,3,2,1 };
+	vec2 x0 = vec2{ 1,0 };
 
+	////////////////////////////////
+	//VEC2 TESTS
+	////////////////////////////////
+	assert(a0 == a0);
+	assert(aI * 2 == 2 * aI);
+	assert((aI * 2 == mat2{ 2,0,0,2 }));
+	assert(aI + a0 == aI);
+	assert(aI - aI == a0);
+	assert(aI*-1 == -aI);
+
+	assert(aI * aI == aI);
+	assert((mat2{ 1,2,3,4 }) * aI == (mat2{ 1,2,3,4 }));
+
+	assert(aI * x0 == x0);
+	assert((r0 * x0 == vec2{ 4,2 }));
+
+	assert(transpose(aI) == aI);
+	assert(inverse(aI) == aI);
+
+	assert(r0*inverse(r0) == aI);
+
+
+
+	mat3 m0 = mat3{ 0,0,0,0,0,0,0,0,0 };
+	mat3 mI = mat3Identity();
+	mat3 t0 = mat3{ 9,8,7,6,5,4,3,2,1 };
+	vec3 v0 = vec3{ 2,1,0 };
+
+	////////////////////////////////
+	//VEC3 TESTS
+	////////////////////////////////
 	assert(m0 == m0);
 	assert(mI * 2 == 2 * mI);
-	assert((mI * 2 == mat2{ 2,0,0,2 }));
+	assert((mI * 2 == mat3{ 2,0,0,0,2,0,0,0,2 }));
 	assert(mI + m0 == mI);
 	assert(mI - mI == m0);
 	assert(mI * -1 == -mI);
 
 	assert(mI * mI == mI);
-	assert((mat2{ 1,2,3,4 }) * mI == (mat2{ 1,2,3,4 }));
+	assert((mat3{ 1,2,3,4,5,6,7,8,9 }) * mI == (mat3{ 1,2,3,4,5,6,7,8,9 }));
 
 	assert(transpose(mI) == mI);
 	assert(inverse(mI) == mI);
 
-	assert(t0 * inverse(t0) == mI);
+	//assert(t0 * inverse(t0) == mI);
 
-	printf("All good :D");
+	////////////////////////////////
+	//TRANSLATION TESTS
+	////////////////////////////////
+	vec3 j = { 2,5,1 };
+	assert((scale(5, 1)* j == vec3{ 10,5,1 }));
+	assert((rotation(deg2rad(90)) == mat3{ 0,-1,0,1,0,0,0,0,1 }));
+	assert((rotation(deg2rad(90))* j == vec3{ -5,2,1 }));
+	assert((translate(0, 3) == mat3{ 1,0,0,0,1,3,0,0,1 }));
+	assert((translate(0, 3)* j == vec3{ 2,8,1 }));
+
+
+	printf("All good :D\n\n");
+
+	mat3 scalMat = mat3{ -2,0,0,0,1,0,0,0,1 };
+	mat3 transMat = mat3{ 1,0,5,0,1,-4,0,0,1 };
+
+	//Is it supposed to be a vec2?
+	vec3 multVec = vec3{ -3,4,0 };
+
+	mat3 p = scalMat * transMat;
+	mat3 q = transMat * scalMat;
+
+	multVec = p*multVec;
+	printf("p: %d %d\n", multVec.x, multVec.y);
+
+	multVec = q * vec3{ -3,4,0 };
+	printf("q: %d %d\n", multVec.x, multVec.y);
+
+
 
 	getchar();
 	return;

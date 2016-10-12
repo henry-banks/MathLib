@@ -94,20 +94,16 @@ mat2 operator*(const mat2 & l, const mat2 & r)
 			out.mm[col][row] = dotProd(c.c[row], r.c[col]);
 		}
 	}
+	return out;
 }
 
-mat2 operator*(const mat2 & l, const vec2 & r)
+vec2 operator*(const mat2 & l, const vec2 & r)
 {
-	mat2 out;
-	//I'm not entirely sure if this is correct...
-	out.mm[0][0] = dotProd(out.c[0], r);
-	out.mm[0][1] = dotProd(out.c[0], r);
-	out.mm[1][0] = dotProd(out.c[1], r);
-	out.mm[1][1] = dotProd(out.c[1], r);
-	/*out.mm[0][0] = (l.mm[0][0] * r.x) + (l.mm[0][1] * r.y);
-	out.mm[0][1] = (l.mm[0][0] * r.x) + (l.mm[0][1] * r.y);
-	out.mm[1][0] = (l.mm[1][0] * r.x) + (l.mm[1][1] * r.y);
-	out.mm[1][1] = (l.mm[1][0] * r.x) + (l.mm[1][1] * r.y);*/
+	mat2 c = l;
+	vec2 out;
+
+	out.v[0] = dotProd(c.c[0], r);
+	out.v[1] = dotProd(c.c[1], r);
 
 	return out;
 }

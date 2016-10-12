@@ -126,7 +126,7 @@ vec2 normalize(const vec2 & v)
 
 float dotProd(const vec2 & rhs, const vec2 & lhs)
 {
-	float out = rhs.x*lhs.x + rhs.y * lhs.y;
+	float out = (rhs.x*lhs.x) + (rhs.y * lhs.y);
 	return out;
 }
 

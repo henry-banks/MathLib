@@ -24,7 +24,7 @@ bool operator==(const mat2 &l, const mat2 &r);
 mat2 operator*(const mat2 &l, const float &r);
 mat2 operator*(const float &l, const mat2 &r);
 mat2 operator*(const mat2 &l, const mat2 &r);
-mat2 operator*(const mat2 &l, const vec2 &r);
+vec2 operator*(const mat2 &l, const vec2 &r);
 
 mat2 inverse(const mat2 &l);
 float determinant(const mat2 &l);

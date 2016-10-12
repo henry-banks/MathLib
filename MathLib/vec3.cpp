@@ -125,7 +125,7 @@ vec3 normalize(const vec3 & v)
 
 float dotProd(const vec3 & rhs, const vec3 & lhs)
 {
-	return rhs.x*lhs.x + rhs.y + lhs.y + rhs.z + lhs.z;
+	return rhs.x*lhs.x + rhs.y * lhs.y + rhs.z * lhs.z;
 }
 
 float angleBetween(const vec3 & rhs, const vec3 & lhs)
@@ -141,4 +141,14 @@ vec3 crossProd(const vec3 & lhs, const vec3 & rhs)
 	out.z = (lhs.x * rhs.y) - (lhs.y * rhs.x);
 
 	return out;
+}
+
+float vec3::operator[](unsigned idx) const
+{
+	return v[idx];;
+}
+
+float & vec3::operator[](unsigned idx)
+{
+	return v[idx];
 }
