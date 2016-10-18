@@ -19,13 +19,13 @@ bool fequals(float lhs, float rhs)
 
 float deg2rad(float deg)
 {
-	float out = deg * (PI / 180);
+	float out = (deg * PI)/ 180;
 	return out;
 }
 
 float rad2deg(float rad)
 {
-	float out = rad * (180 / PI);
+	float out = (rad * 180) / PI;
 	return out;
 }
 

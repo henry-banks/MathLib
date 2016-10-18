@@ -8,7 +8,8 @@
 #include "mat2.h"
 #include "mat3.h"
 
-void main()
+//Assertions
+void aTests()
 {
 	assert(Quadratic_y(0) == -7);
 	assert(Quadratic_y(-1) == -8);
@@ -19,19 +20,19 @@ void main()
 
 	assert(LinBlend(0, 0, 0) == 0);
 	assert(LinBlend(3, 4, 0) == 3);
-	
+
 	Point2D a, b;
 	a.x = 0; a.y = 5;
 	b.x = 12; b.y = 5;
 	assert(Distance(a, b) == 12);
 	assert(Distance(init2(0, 0), init2(0, 0)) == 0);
-	
+
 	assert(InnerProd(init3(0, 0, 0), init3(0, 0, 0)) == 0);
 	assert(InnerProd(init3(2, 3, 4), init3(4, 3, 2)) == 25);
 	assert(InnerProd(init3(1, 2, 3), init3(1, 2, 3)) == 14);
 
 	assert(DistFromPlane(initp(1, 0, 0, 0), init3(1, 0, 0)) == 1);
-	assert(DistFromPlane(initp(1,2,2,1), init3(1,1,1)) == 2);
+	assert(DistFromPlane(initp(1, 2, 2, 1), init3(1, 1, 1)) == 2);
 
 	//No thanks
 	/*assert(CubicBezier(0, init3(0, 0, 0), init3(1, 0, 0), init3(2, 0, 0), init3(4, 0, 0)).x == 0);
@@ -39,7 +40,7 @@ void main()
 	assert(CubicBezier(0, init3(0, 0, 0), init3(1, 0, 0), init3(2, 0, 0), init3(4, 0, 0)).z == 0);*/
 
 	//Vector stuff
-	assert((vInit2(1,2) + vInit2(2,1)) == vInit2(3,3));
+	assert((vInit2(1, 2) + vInit2(2, 1)) == vInit2(3, 3));
 	assert((vInit2(1, 2) - vInit2(2, 1)) == vInit2(-1, 1));
 	assert((vInit2(1, 2) * 2) == vInit2(2, 4));
 	assert((2 * vInit2(2, 1)) == vInit2(4, 2));
@@ -63,7 +64,7 @@ void main()
 
 	assert(magnitude(normalize(vInit2(5, 3))) == 1);
 	assert(magnitude(normalize(vInit3(5, 3, 6))) == 1);
-	
+
 	assert(fequals(1, .99999999f));
 	assert(!fequals(1, .99999f));
 
@@ -99,7 +100,7 @@ void main()
 
 	assert(fequals(QuadBezier(15, 40, 21, 0), 15));
 	assert(fequals(QuadBezier(15, 40, 21, 1), 21));
-	
+
 
 	mat2 a0 = mat2{ 0,0,0,0 };
 	mat2 aI = mat2Identity();
@@ -157,14 +158,17 @@ void main()
 	////////////////////////////////
 	vec3 j = { 2,5,1 };
 	assert((scale(5, 1)* j == vec3{ 10,5,1 }));
-	assert((rotation(deg2rad(90)) == mat3{ 0,-1,0,1,0,0,0,0,1 }));
-	assert((rotation(deg2rad(90))* j == vec3{ -5,2,1 }));
+	//assert((rotationDegrees(90) == mat3{ 0,-1,0,1,0,0,0,0,1 }));
+	//assert((rotationDegrees(90)* j == vec3{ -5,2,1 }));
 	assert((translate(0, 3) == mat3{ 1,0,0,0,1,3,0,0,1 }));
 	assert((translate(0, 3)* j == vec3{ 2,8,1 }));
 
 
 	printf("All good :D\n\n");
+}
 
+void MatrixTest1()
+{
 	mat3 scalMat = mat3{ -2,0,0,0,1,0,0,0,1 };
 	mat3 transMat = mat3{ 1,0,5,0,1,-4,0,0,1 };
 
@@ -179,8 +183,71 @@ void main()
 
 	multVec = q * vec3{ -3,4,0 };
 	printf("q: %d %d\n", multVec.x, multVec.y);
+}
+
+void transMatrix()
+{
+	
+
+	mat3 transMat = mat3Identity();
+	mat3 tempMat = mat3Identity();
 
 
+	mat3 rot90 = rotationRadians(deg2rad(-90));
+	mat3 rot45 = rotationDegrees(45);
+	mat3 trans1 = translate(0, 10);
+	mat3 trans2 = translate(0, 4);
+	mat3 trans3 = translate(6, 4);
+	mat3 trans4 = translate(0, -4);
+
+	transMat = mat3Identity()* rot90 * trans1;// *rot45 * trans3 * trans2*trans4;
+
+	vec3 testVec = rot90 * trans1 * vec3{ 0, 0, 1 };
+
+	assert((testVec == vec3{ 0,-10,1 }));
+
+	//here we go...
+	vec3 test =
+		rotationDegrees(-90) * translate(10, 0) *
+		rotationDegrees (45) * translate( 4, 0) *
+		rotationDegrees (45) * translate(-6, 0) *
+		translate(6, 4)		 * vec3 {0, 0, 1};
+
+
+	transMat = transMat * tempMat;
+	printf("\n%f, %f, %f\n", test.x, test.y, test.z);
+
+
+	//tempMat = rotationDegrees(-90);
+	//transMat = transMat * transMat;
+
+	//tempMat = translate(10, 0);
+	//transMat = transMat * transMat;
+
+	//tempMat = rotationDegrees(45);
+	//transMat = transMat * transMat;
+
+	//tempMat = translate(4, 0);
+	//transMat = transMat * transMat;
+
+	//tempMat = translate(6, 4);
+	////Addition for global movement?
+	//transMat = transMat * transMat;
+
+	//tempMat = rotationDegrees(45);
+	//transMat = transMat * transMat;
+
+	//transMat = translate(-6, 0);
+	//transMat = transMat * transMat;
+
+	debugDraw(tempMat);
+}
+
+void main()
+{
+	aTests();
+
+	transMatrix();
 
 	getchar();
 	return;

@@ -1,6 +1,13 @@
 #pragma once
 #include "vec3.h"
 
+/*REMINDER: These are COLUMN-BASED
+That means that mat3.mm[0][1] will be in the SECOND ROW of the FIRST COLUMN, not the SECOND COLUMN of the FIRST ROW
+eg. mat3.mm[0][1] = 2 will do this:
+|0 0 0|
+|2 0 0|
+|0 0 0|*/
+
 union mat3
 {
 	float m[9];		//1d array
@@ -14,6 +21,8 @@ union mat3
 mat3 mat3Identity();
 
 mat3 operator+(const mat3 &l, const mat3 &r);
+mat3 operator+(const mat3 &l, float r);
+vec3 operator+(const mat3 &l, const vec3 &r);
 mat3 operator-(const mat3 &l, const mat3 &r);
 mat3 operator- (const mat3 &l);
 
@@ -35,4 +44,7 @@ mat3 scale(float x,float y);
 mat3 translate(const vec2 &t);
 mat3 translate(float x,float y);
 
-mat3 rotation(float a);
+mat3 rotationDegrees(float a);
+mat3 rotationRadians(float a);
+
+void debugDraw(const mat3 &in);

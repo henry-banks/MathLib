@@ -7,7 +7,7 @@ RigidBody::RigidBody()
 {
 	mass = 1.0f;
 	drag = .25f;
-	angDrag = 5.25f;
+	angDrag = 1.f;
 
 	force = vec2{ 0,0 };
 	impulse = vec2{ 0,0 };
@@ -39,7 +39,7 @@ void RigidBody::addImpulse(const vec2 & inImpulse)
 
 void RigidBody::addTorque(float inTorque)
 {
-	torque = inTorque;
+	torque += inTorque;
 }
 
 void RigidBody::integrate(Transform & trans, float deltaTime)
@@ -50,14 +50,16 @@ void RigidBody::integrate(Transform & trans, float deltaTime)
 	trans.pos += velocity * deltaTime;
 	force = impulse = { 0,0 };
 
+	//Drag/Dampening
 	force = -velocity * drag;
 
 	angAcc = torque / mass;
 	angVel += angAcc * deltaTime;
 	trans.rotAngle += angVel * deltaTime;
+
 	torque = 0;
 
-	torque = -angVel * angDrag;
+	torque = -angVel * angDrag;	
 }
 
 void RigidBody::debugDraw(const Transform & trans)

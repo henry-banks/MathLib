@@ -27,12 +27,12 @@ Spaceship::~Spaceship()
 
 void Spaceship::doThrust(float val)
 {
-	vertThrust = val;
+	vertThrust += val;
 }
 
 void Spaceship::doTurn(float val)
 {
-	horizThrust = val;
+	horizThrust += val * 10;
 }
 
 void Spaceship::doStop(float val)
@@ -53,14 +53,14 @@ void Spaceship::update(const Transform &trans, RigidBody & rigid)
 	//std::cout << -rigid.angVel * breakPower * stopAction << "\n";
 
 	//If the ship is going faster than the max speed...
-	if (magnitude(rigid.velocity) > maxSpeed)
-	{
-		//Get the direction
-		vec2 dir = normalize(rigid.velocity);
+	//if (magnitude(rigid.velocity) > maxSpeed)
+	//{
+	//	//Get the direction
+	//	vec2 dir = normalize(rigid.velocity);
 
-		//Set the velocity to be the direction, going at MAXIMUM SPEED.
-		rigid.velocity = dir * maxSpeed;
-	}
+	//	//Set the velocity to be the direction, going at MAXIMUM SPEED.
+	//	rigid.velocity = dir * maxSpeed;
+	//}
 
-	horizThrust = vertThrust = 0;
+	horizThrust = vertThrust = stopAction = 0;
 }

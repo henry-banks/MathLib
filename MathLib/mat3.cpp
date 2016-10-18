@@ -1,4 +1,6 @@
 #include "mat3.h"
+#include "flops.h"
+#include <iostream>
 #include <math.h>
 
 mat3 mat3Identity()
@@ -12,6 +14,28 @@ mat3 operator+(const mat3 & l, const mat3 & r)
 	for (int i = 0; i < 9; i++)
 	{
 		out.m[i] = l.m[i] + r.m[i];
+	}
+
+	return out;
+}
+
+mat3 operator+(const mat3 & l, float r)
+{
+	mat3 out;
+	for (int i = 0; i < 9; i++)
+	{
+		out.m[i] = l.m[i] + r;
+	}
+
+	return out;
+}
+
+vec3 operator+(const mat3 & l, const vec3 & r)
+{
+	vec3 out;
+	for (int i = 0; i < 3; i++)
+	{
+		out[i] = l.m[i] + r[i];
 	}
 
 	return out;
@@ -95,7 +119,7 @@ mat3 operator*(const mat3 & l, const mat3 & r)
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			out.mm[i][j] = dotProd(c.c[j], r.c[i]); //  c.mm[row][col] * r.mm[col][row];
+			out.mm[i][j] = dotProd(c.c[j], r.c[i]);
 		}
 	}
 	return out;
@@ -103,10 +127,11 @@ mat3 operator*(const mat3 & l, const mat3 & r)
 
 vec3 operator*(const mat3 & l, const vec3 & r)
 {
-	mat3 c = l;
 	vec3 out;
+	mat3 c = transpose(l);
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; i++)
+	{
 		out.v[i] = dotProd(c.c[i], r);
 	}
 	return out;
@@ -120,16 +145,7 @@ mat3 inverse(const mat3 & l)
 	out.c[0] = crossProd(l.c[1], l.c[2]);
 	out.c[1] = crossProd(l.c[2], l.c[0]);
 	out.c[2] = crossProd(l.c[0], l.c[1]);
-	//out = transpose(l);
-	
-	//Set certain things as negative
-	/*for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			i == j ?
-				out.mm[i][j] = l.mm[i][j] :
-				out.mm[i][j] = -l.mm[j][i];
-		}
-	}*/
+
 	return 1/determinant(l)*transpose(out);
 }
 
@@ -163,27 +179,92 @@ mat3 scale(float x, float y)
 mat3 translate(const vec2 & t)
 {
 	mat3 out = mat3Identity();
-	out.mm[0][2] = t.x;
-	out.mm[1][2] = t.y;
+	out.mm[2][0] = t.x;
+	out.mm[2][1] = t.y;
 	return out;
 }
 
 mat3 translate(float x, float y)
 {
 	mat3 out = mat3Identity();
-	out.mm[0][2] = x;
-	out.mm[1][2] = y;
+	out.mm[2][0] = x;
+	out.mm[2][1] = y;
 	return out;
 }
 
-mat3 rotation(float a)
+// -0.0000007 == 0
+mat3 rotationDegrees(float a)
 {
-	vec2 d = fromAngle(a);
-	mat3 out = mat3Identity();//mat3{ cosf(a),-sinf(a),0,sinf(a),cosf(a),0,0,0,1 };
-	//magicmath
-	out.c[0].xy = d;
-	out.c[1].xy = -perp(d);
+	mat3 out = mat3Identity();
+	if (a == 90 || a == -90) {
+		out = 
+		{ 0, sinf(deg2rad(a)),  0,
+			-sinf(deg2rad(a)),  0,  0,
+			0,					0,				   1 };
+	}
+	else {
+		out = { cosf(deg2rad(a)),  sinf(deg2rad(a)),  0,
+			   -sinf(deg2rad(a)),  cosf(deg2rad(a)),  0, 
+			    0,				   0,		   	      1 };
+	}
+
+
+	// find a position along a circle from an angle
+	// { cos(angle), sin(angle) }
+
+	//Round stuff if it's essentially an integer(?)
+	/*if (fequals(out.mm[0][0], roundf(out.mm[0][0])))
+		out.mm[0][0] = roundf(out.mm[0][0]);
+
+	if (fequals(out.mm[0][1], roundf(out.mm[0][1])))
+		out.mm[0][1] = roundf(out.mm[0][1]);
+
+	if (fequals(out.mm[1][0], roundf(out.mm[1][0])))
+		out.mm[1][0] = roundf(out.mm[1][0]);
+
+	if (fequals(out.mm[1][1], roundf(out.mm[1][1])))
+		out.mm[1][1] = roundf(out.mm[1][1]);*/
+
 	return out;
+}
+
+//This is probably broken
+mat3 rotationRadians(float a)
+{
+	mat3 out = { cosf(a), sinf(a), 0,
+				 -sinf(a),  cosf(a), 0,
+				 0,		   0,	    1 };
+
+	/*vec2 d = fromAngle(a);
+	mat3 out = mat3Identity();
+	out.c[0].xy = d;
+	out.c[1].xy = -perp(d);*/
+
+	//Round stuff if it's essentially an integer(?)
+	/*if (fequals(out.mm[0][0], roundf(out.mm[0][0])))
+		out.mm[0][0] = roundf(out.mm[0][0]);
+
+	if (fequals(out.mm[0][1], roundf(out.mm[0][1])))
+		out.mm[0][1] = roundf(out.mm[0][1]);
+
+	if (fequals(out.mm[1][0], roundf(out.mm[1][0])))
+		out.mm[1][0] = roundf(out.mm[1][0]);
+
+	if (fequals(out.mm[1][1], roundf(out.mm[1][1])))
+		out.mm[1][1] = roundf(out.mm[1][1]);*/
+
+	return out;
+}
+
+
+void debugDraw(const mat3 &in)
+{
+	printf("Position: x: %f, y: %f\n\n", in.mm[2][0], in.mm[2][1]);
+
+	printf("Full matrix:");
+	printf("\n%f %f %f", in.mm[0][0], in.mm[1][0], in.mm[2][0]);
+	printf("\n%f %f %f", in.mm[0][1], in.mm[1][1], in.mm[2][1]);
+	printf("\n%f %f %f", in.mm[0][2], in.mm[1][2], in.mm[2][2]);
 }
 
 float mat3::operator[](unsigned idx) const
