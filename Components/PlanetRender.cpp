@@ -17,21 +17,16 @@ PlanetRender::~PlanetRender()
 {
 }
 
-void PlanetRender::draw(Transform & planetTrans, bool isOrigin)
+void PlanetRender::draw(const Transform & planetTrans, const mat3 &t)
 {
 	mat3 glob = planetTrans.getGlobalTransform();
 
+	mat3 l = t * glob;
+	//vec3 nPos = l.c[2];
+
 	vec2 pos;
-	if (isOrigin) {
-		pos.x = glob.c[2].x;
-		pos.y = glob.c[2].y;
-	}
-	//Allows satellites to be very small distances away from origin
-	//Currently doesn't work
-	else {
-		pos.x = glob.c[2].x;
-		pos.y = glob.c[2].y;
-	}
+	pos.x = l.c[2].x;
+	pos.y = l.c[2].y;
 
 	sfw::drawCircle(pos.x, pos.y, size, 12, color);
 }

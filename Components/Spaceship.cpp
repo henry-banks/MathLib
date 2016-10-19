@@ -16,7 +16,7 @@ Spaceship::Spaceship()
 	speed = 500;
 	maxSpeed = 1000;
 
-	turnSpeed = 4.f;
+	turnSpeed = 20.f;
 	
 }
 

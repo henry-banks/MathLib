@@ -21,14 +21,14 @@ void SpaceObject::update(float deltaTime)
 	body.integrate(trans, deltaTime);
 }
 
-void SpaceObject::draw()
+void SpaceObject::draw(const mat3 &t)
 {
-	render.draw(trans, isOrigin);
+	render.draw(trans, t);
 }
 
-void SpaceObject::updateDraw(float deltaTime)
+void SpaceObject::updateDraw(float deltaTime, const mat3 &t)
 {
 
 	update(deltaTime);
-	draw();
+	draw(t);
 }

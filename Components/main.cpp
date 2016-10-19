@@ -3,16 +3,20 @@
 #include "flops.h"
 #include "Spaceship.h"
 #include "SpaceshipController.h"
+#include "ShipRender.h"
 #include "Tank.h"
+#include <cstdlib>
+#include <vector>
 
 //SpaceObject #include's everything else so I don't need to #include it here
 #include "SpaceObject.h"
 
 using namespace sfw;
+using namespace std;
 
 void drawMain()
 {
-	float W = 800, H = 800;
+	float W = 1600, H = 1000;
 	float margin = 10;
 	float steps = 100;
 	float maxSpeed = 100;
@@ -21,9 +25,16 @@ void drawMain()
 	initContext(W, H);
 	setBackgroundColor(0x222222ff);
 
-	Transform playerTransform = { 200,200 };
-	Transform ST1 = { -50, -2 };
-	Transform ST2 ={50, -2};
+	Transform playerTransform = { W/2,H/2 };
+	Transform ST1 = { -15, -40 };
+	Transform ST2 ={15, -40};
+	SpaceObject ST3;
+	SpaceObject ST4;
+
+	ShipRender playerRender;
+
+	ST3.init(vec2{ 0, 0 }, vec2{ 2,2 }, 50, WHITE, 6, &playerTransform);
+	ST4.init(vec2{ 30,0 }, vec2{ 1,1 }, 50, CYAN, 3, &ST3.trans);
 
 	ST1.m_parent = &playerTransform;
 	ST2.m_parent = &playerTransform;
@@ -35,7 +46,7 @@ void drawMain()
 	SpaceshipController control;
 
 	SpaceObject sun;
-	sun.init(vec2{ W / 2, H / 2 }, vec2{ 10, 10 }, 50,	YELLOW, 30, nullptr, true);
+	sun.init(vec2{ W / 2, H / 2 }, vec2{ 10, 10 }, 20,	YELLOW, 60, nullptr);
 
 	SpaceObject p1;
 	p1.init(vec2{ 5,-5 }, vec2{ 10, 10 }, 20, WHITE, 5, &sun.trans);
@@ -43,15 +54,31 @@ void drawMain()
 	SpaceObject p2;
 	p2.init(vec2{ -10,5 }, vec2{ 5,5 }, 50, 0xfc9432ff, 10, &sun.trans);
 	SpaceObject m1;
-	m1.init(vec2{ 1,0 }, vec2{ 1,1 }, 30, WHITE, 2, &p2.trans);
+	m1.init(vec2{ .5,0 }, vec2{ 1,1 }, 30, WHITE, 2, &p2.trans);
 
 	SpaceObject p3;
 	p3.init(vec2{ 8,-16 }, vec2{ 5,5 }, 50, GREEN, 10, &sun.trans);
 
 	SpaceObject p4;
 	p4.init(vec2{ -10,30 }, vec2{ 5,5 }, 50, CYAN, 20, &sun.trans);
+	SpaceObject m2;
+	m2.init(vec2{ .75,0 }, vec2{ 1,1 }, 20, WHITE, 2, &p4.trans);
+	SpaceObject m3;
+	m3.init(vec2{ -1,0 }, vec2{ 1,1 }, 40, WHITE, 3, &p4.trans);
 
+	SpaceObject p5;
+	p5.init(vec2{ -30,-20 }, vec2{ 5,5 }, 50, MAGENTA, 30, &sun.trans);
 
+	SpaceObject p6;
+	p5.init(vec2{ 50,50 }, vec2{ 5,5 }, 20, 0x4287d6ff, 40, &sun.trans);
+
+	SpaceObject p7;
+	p7.init(vec2{ -500,-500 }, vec2{ 5,5 }, 30, 0xceb514ff, 40, &sun.trans);
+
+	SpaceObject p8;
+	p8.init(vec2{ -30,-27 }, vec2{ 2,2 }, 15, 0x7e3b8eff, 40, &sun.trans);
+
+	//DEFUNCT OLD PLANET SETUP
 	/*Transform sunTrans;
 	sunTrans.pos = vec2{ W / 2, H / 2 };
 	sunTrans.scl = vec2{ 10, 10 };
@@ -87,15 +114,22 @@ void drawMain()
 	moonMotor.rotSpeed = 10;
 	PlanetRender moon1Render;*/
 
+	Transform cameraTransform;
+
 	while (stepContext())
 	{
 
 		float deltaTime = getDeltaTime();
 
-		if (playerTransform.pos.x < 0) playerTransform.pos.x = W;
+		//Border wrapping
+		/*if (playerTransform.pos.x < 0) playerTransform.pos.x = W;
 		else if (playerTransform.pos.x > W) playerTransform.pos.x = 0;
 		if (playerTransform.pos.y < 0) playerTransform.pos.y = H;
-		else if (playerTransform.pos.y > H) playerTransform.pos.y = 0;
+		else if (playerTransform.pos.y > H) playerTransform.pos.y = 0;*/
+
+		//Temporary reset key
+		if (getKey('Q'))
+			playerTransform.pos = vec2{ W/2,H/2 };
 
 		control.update(playerShip);
 		playerShip.update(playerTransform, playerBody);
@@ -118,10 +152,6 @@ void drawMain()
 		moonMotor.update(moonBody);
 		moonBody.integrate(moon1, deltaTime);*/
 
-		/*playerTransform.debugDraw();
-		playerBody.debugDraw(playerTransform);
-		ST1.debugDraw();
-		ST2.debugDraw();*/
 
 		/*sunRender.draw(sunTrans);
 		mercuryRender.draw(pMercury);
@@ -133,15 +163,50 @@ void drawMain()
 		pVenus.debugDraw();
 		moon1.debugDraw();*/
 
-		//printf("%f\n", sun.body.angVel);
+		cameraTransform.pos = playerTransform.pos;
+
+		mat3 proj = translate(W / 2, H / 2) * scale(15, 15);
+		mat3 view = inverse(cameraTransform.getGlobalTransform());
+
+		mat3 camera = proj * view;
 
 		//Main draw function
-		sun.updateDraw(deltaTime);
-		p1.updateDraw(deltaTime);
-		p2.updateDraw(deltaTime);
-		m1.updateDraw(deltaTime);
-		p3.updateDraw(deltaTime);
-		p4.updateDraw(deltaTime);
+
+		//playerTransform.debugDraw(camera);
+		//playerBody.debugDraw(playerTransform);
+		//ST1.debugDraw(camera);
+		//ST2.debugDraw(camera);
+
+		playerRender.draw(playerTransform, camera);
+
+	/*	ST3.updateDraw(deltaTime);
+		ST4.updateDraw(deltaTime);*/
+
+		/*sun.trans.debugDraw(camera);
+		p1.trans.debugDraw(camera);
+		p2.trans.debugDraw(camera);
+		m1.trans.debugDraw(camera);
+		p5.trans.debugDraw(camera);*/
+
+
+		sun.updateDraw(deltaTime, camera);
+		p1.updateDraw(deltaTime, camera);
+		p2.updateDraw(deltaTime, camera);
+		m1.updateDraw(deltaTime, camera);
+		p3.updateDraw(deltaTime, camera);
+		p4.updateDraw(deltaTime, camera);
+		p5.updateDraw(deltaTime, camera);
+		m2.updateDraw(deltaTime, camera);
+		m3.updateDraw(deltaTime, camera);
+		p6.updateDraw(deltaTime, camera);
+		p7.updateDraw(deltaTime, camera);
+		p8.updateDraw(deltaTime, camera);
+
+		//Draw borders
+		drawLine(2, 2, W-1, 2, WHITE);
+		drawLine(2, 2, 2, H-1, WHITE);
+		drawLine(2, H-2, W-1, H-1, WHITE);
+		drawLine(W-2, 2, W-1, H-1, WHITE);
 	}
 
 	sfw::termContext();
@@ -184,5 +249,5 @@ void drawTank()
 
 void main()
 {
-	drawTank();
+	drawMain();
 }

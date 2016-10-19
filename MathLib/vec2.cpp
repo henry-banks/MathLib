@@ -55,6 +55,15 @@ vec2 operator*(float lhs, const vec2 & rhs)
 	return out;
 }
 
+vec2 operator*(const vec2 & lhs, const vec2 & rhs)
+{
+	vec2 out;
+	out.x = lhs.x * rhs.x;
+	out.y = lhs.y * rhs.y;
+
+	return out;
+}
+
 vec2 operator/(const vec2 & lhs, const vec2 & rhs)
 {
 	vec2 out;

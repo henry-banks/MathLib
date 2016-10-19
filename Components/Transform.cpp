@@ -59,6 +59,30 @@ void Transform::setDir(const vec2 & inDir)
 	rotAngle = angle(inDir);
 }
 
+vec2 Transform::getGlobalPos() const
+{
+	vec2 out = getGlobalTransform().c[2].xy;
+	return out;
+}
+
+vec2 Transform::getGlobalRight() const
+{
+	vec2 out = getGlobalTransform().c[0].xy;
+	return out;
+}
+
+vec2 Transform::getGlobalUp() const
+{
+	vec2 out = getGlobalTransform().c[1].xy;
+	return out;
+}
+
+float Transform::getGlobalAngle() const
+{
+	float out = angle(getGlobalRight());
+	return out;
+}
+
 vec2 Transform::getUp() const
 {
 	return -perp(getDir());
@@ -87,19 +111,16 @@ mat3 Transform::getGlobalTransform() const
 void Transform::debugDraw(const mat3 &t) const
 {
 
-	//<PROBLEM>
 	mat3 l = t * getGlobalTransform();
 
 	vec3 nPos = l.c[2];
 
-	vec3 right	= getGlobalTransform() * vec3{ 1,0,1 };
-	vec3 up		= getGlobalTransform() * vec3{ 0,1,1 };
-	//</PROBLEM>
+	vec3 right	= getGlobalTransform() * vec3{ 10,0,1 };
+	vec3 up		= getGlobalTransform() * vec3{ 0,12,1 };
 
 
-
-	drawLine(nPos.x, nPos.y, right.x, right.y, RED);
-	drawLine(nPos.x, nPos.y, up.x, up.y, GREEN);
+	/*drawLine(nPos.x, nPos.y, right.x, right.y, RED);
+	drawLine(nPos.x, nPos.y, up.x, up.y, GREEN);*/
 
 	/*vec2 dirEnd = pos + getDir()*scl.x / 2.25;
 	vec2 upEnd = pos + perp(getDir()) * scl.y * 2.25;
@@ -107,9 +128,9 @@ void Transform::debugDraw(const mat3 &t) const
 	drawLine(nPos.x, nPos.y, dirEnd.x, dirEnd.y, RED);
 	drawLine(nPos.x, nPos.y, upEnd.x, upEnd.y, GREEN);*/
 	
-	vec3 pPos = m_parent ? m_parent->getGlobalTransform().c[2] : nPos;
+	vec3 pPos = m_parent ? t * m_parent->getGlobalTransform().c[2] : nPos;
 	drawLine(pPos.x, pPos.y, nPos.x, nPos.y, BLUE);
 
-	drawCircle(nPos.x, nPos.y, 12, 12, WHITE);
+	drawCircle(nPos.x, nPos.y, 6, 6, WHITE);
 
 }

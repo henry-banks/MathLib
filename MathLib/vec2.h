@@ -18,6 +18,7 @@ vec2 operator-(const vec2 &v);
 
 vec2 operator*(const vec2 &lhs, float rhs);
 vec2 operator*(float lhs, const vec2 &rhs);
+vec2 operator*(const vec2 &lhs, const vec2 &rhs);
 
 vec2 operator/(const vec2 &lhs, const vec2 &rhs);
 vec2 operator/(const vec2 &lhs, float rhs);

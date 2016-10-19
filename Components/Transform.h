@@ -22,6 +22,11 @@ public:
 	vec2 getDir() const;
 	void setDir(const vec2 &inDir);
 
+	vec2 getGlobalPos()		const;
+	vec2 getGlobalRight()	const;
+	vec2 getGlobalUp()		const;
+	float getGlobalAngle()	const;
+
 	mat3 getLocalTransform() const;
 	mat3 getGlobalTransform() const;
  
