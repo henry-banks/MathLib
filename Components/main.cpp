@@ -3,6 +3,7 @@
 #include "flops.h"
 #include "Spaceship.h"
 #include "SpaceshipController.h"
+#include "Tank.h"
 
 //SpaceObject #include's everything else so I don't need to #include it here
 #include "SpaceObject.h"
@@ -34,16 +35,22 @@ void drawMain()
 	SpaceshipController control;
 
 	SpaceObject sun;
-	sun.init(vec2{ W / 2, H / 2 }, vec2{ 10, 10 }, 5,	YELLOW, 20);
+	sun.init(vec2{ W / 2, H / 2 }, vec2{ 10, 10 }, 50,	YELLOW, 30, nullptr, true);
 
 	SpaceObject p1;
 	p1.init(vec2{ 5,-5 }, vec2{ 10, 10 }, 20, WHITE, 5, &sun.trans);
 
 	SpaceObject p2;
-	p2.init(vec2{ -15,5 }, vec2{ 5,5 }, 50, RED, 10, &sun.trans);
-
+	p2.init(vec2{ -10,5 }, vec2{ 5,5 }, 50, 0xfc9432ff, 10, &sun.trans);
 	SpaceObject m1;
-	m1.init(vec2{ 1,0 }, vec2{ 1,1 }, 10, WHITE, 2, &p2.trans);
+	m1.init(vec2{ 1,0 }, vec2{ 1,1 }, 30, WHITE, 2, &p2.trans);
+
+	SpaceObject p3;
+	p3.init(vec2{ 8,-16 }, vec2{ 5,5 }, 50, GREEN, 10, &sun.trans);
+
+	SpaceObject p4;
+	p4.init(vec2{ -10,30 }, vec2{ 5,5 }, 50, CYAN, 20, &sun.trans);
+
 
 	/*Transform sunTrans;
 	sunTrans.pos = vec2{ W / 2, H / 2 };
@@ -126,15 +133,15 @@ void drawMain()
 		pVenus.debugDraw();
 		moon1.debugDraw();*/
 
-		printf("%f\n", sun.body.angVel);
+		//printf("%f\n", sun.body.angVel);
 
 		//Main draw function
-		sun.update(deltaTime);
-		sun.draw();
-		p1.update(deltaTime);
-		p1.draw();
-		/*p2.updateDraw(deltaTime);
-		m1.updateDraw(deltaTime);*/
+		sun.updateDraw(deltaTime);
+		p1.updateDraw(deltaTime);
+		p2.updateDraw(deltaTime);
+		m1.updateDraw(deltaTime);
+		p3.updateDraw(deltaTime);
+		p4.updateDraw(deltaTime);
 	}
 
 	sfw::termContext();
@@ -159,7 +166,23 @@ void drawText()
 	system("pause");
 }
 
+void drawTank()
+{
+	float W = 800, H = 800;
+	initContext(W, H);
+	setBackgroundColor(0x222222ff);
+
+	
+
+	while (stepContext())
+	{
+		Tank t;
+
+	}
+	termContext();
+}
+
 void main()
 {
-	drawMain();
+	drawTank();
 }

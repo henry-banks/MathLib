@@ -10,6 +10,6 @@ public:
 	unsigned color;
 	float size;
 
-	void draw(Transform &planetTrans);
+	void draw(Transform &planetTrans, bool isOrigin);
 };
 

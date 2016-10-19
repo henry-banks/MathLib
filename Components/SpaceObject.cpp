@@ -1,7 +1,7 @@
 #include "SpaceObject.h"
 #include <iostream>
 
-void SpaceObject::init(vec2 transPos, vec2 transScl, float motorSpeed, unsigned aColor, int aSize, Transform* aParent)
+void SpaceObject::init(vec2 transPos, vec2 transScl, float motorSpeed, unsigned aColor, int aSize, Transform* aParent, bool aIsOrigin)
 {
 	trans.pos = transPos;
 	trans.scl = transScl;
@@ -11,6 +11,8 @@ void SpaceObject::init(vec2 transPos, vec2 transScl, float motorSpeed, unsigned 
 
 	render.color = aColor;
 	render.size = aSize;
+
+	isOrigin = aIsOrigin;
 }
 
 void SpaceObject::update(float deltaTime)
@@ -21,12 +23,11 @@ void SpaceObject::update(float deltaTime)
 
 void SpaceObject::draw()
 {
-	render.draw(trans);
+	render.draw(trans, isOrigin);
 }
 
 void SpaceObject::updateDraw(float deltaTime)
 {
-	printf("%f\n", deltaTime);
 
 	update(deltaTime);
 	draw();
