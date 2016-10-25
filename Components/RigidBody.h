@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vec2.h"
+#include "mat3.h"	
 #include "Transform.h"
 
 class RigidBody
@@ -26,6 +27,6 @@ public:
 	
 	void integrate(Transform &trans, float deltaTime);
 
-	void debugDraw(const Transform &trans);
+	void debugDraw(const Transform &trans, const mat3 &t);
 };
 

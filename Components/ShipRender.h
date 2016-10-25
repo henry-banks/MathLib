@@ -4,7 +4,7 @@
 class ShipRender
 {
 public:
-	ShipRender();
+	ShipRender(unsigned inColor = 0xffffffff, float inSize = 1);
 	~ShipRender();
 
 	unsigned color;

@@ -7,6 +7,7 @@
 #include "flops.h"
 #include "mat2.h"
 #include "mat3.h"
+#include "Shapes.h"
 
 //Assertions
 void aTests()
@@ -160,9 +161,29 @@ void aTests()
 	assert((scale(5, 1)* j == vec3{ 10,5,1 }));
 	//assert((rotationDegrees(90) == mat3{ 0,-1,0,1,0,0,0,0,1 }));
 	//assert((rotationDegrees(90)* j == vec3{ -5,2,1 }));
-	assert((translate(0, 3) == mat3{ 1,0,0,0,1,3,0,0,1 }));
-	assert((translate(0, 3)* j == vec3{ 2,8,1 }));
+	//assert((translate(0, 3) == mat3{ 1,0,0,0,1,3,0,0,1 }));
+	//assert((translate(0, 3)* j == vec3{ 2,8,1 }));
 
+
+	////////////////////////////////
+	//GEOMETRY TESTS
+	////////////////////////////////
+
+	Circle c = { 0,0,5 };
+
+	assert((translate(4, 0) * c == Circle{ 4,0,5 }));
+
+	assert((scale(2, 1) * c == Circle{ 0,0,10 }));
+	assert((scale(2, 2) * c == Circle{ 0,0,10 }));
+	assert((scale(1, 2) * c == Circle{ 0,0,10 }));
+
+	assert((scale(-1, 1) * c == Circle{ 0,0,5 }));
+	assert((rotationDegrees(45) * c == Circle{ 0,0,5 }));
+
+	AABB testBox{ vec2{1, 2}, vec2{3, 4} };
+
+	assert((testBox.min() == vec2{-2, -2}));
+	assert((testBox.max() == vec2{ 4,6 }));
 
 	printf("All good :D\n\n");
 }
@@ -247,7 +268,7 @@ void main()
 {
 	aTests();
 
-	transMatrix();
+	//transMatrix();
 
 	getchar();
 	return;

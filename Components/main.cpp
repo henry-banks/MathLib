@@ -7,6 +7,7 @@
 #include "Tank.h"
 #include <cstdlib>
 #include <vector>
+#include <string>
 
 //SpaceObject #include's everything else so I don't need to #include it here
 #include "SpaceObject.h"
@@ -24,6 +25,9 @@ void drawMain()
 	//initContext(800,400);
 	initContext(W, H);
 	setBackgroundColor(0x222222ff);
+
+
+	unsigned f = loadTextureMap("./fontmap.png", 16, 16);
 
 	Transform playerTransform = { W/2,H/2 };
 	Transform ST1 = { -15, -40 };
@@ -178,6 +182,8 @@ void drawMain()
 		//ST2.debugDraw(camera);
 
 		playerRender.draw(playerTransform, camera);
+		playerTransform.debugDraw(camera);
+		playerBody.debugDraw(playerTransform, camera);
 
 	/*	ST3.updateDraw(deltaTime);
 		ST4.updateDraw(deltaTime);*/
@@ -202,11 +208,19 @@ void drawMain()
 		p7.updateDraw(deltaTime, camera);
 		p8.updateDraw(deltaTime, camera);
 
+
+		//Draw coordinates
+		string xpos = to_string(playerTransform.pos.x - W/2);
+		string ypos = to_string(playerTransform.pos.y - H/2);
+
+		drawString(f, xpos.c_str(), 5, 20, 12, 12, 0, '\0', WHITE);
+		drawString(f, ypos.c_str(), 175, 20, 12, 12, 0, '\0', WHITE);
+
 		//Draw borders
-		drawLine(2, 2, W-1, 2, WHITE);
+		/*drawLine(2, 2, W-1, 2, WHITE);
 		drawLine(2, 2, 2, H-1, WHITE);
 		drawLine(2, H-2, W-1, H-1, WHITE);
-		drawLine(W-2, 2, W-1, H-1, WHITE);
+		drawLine(W-2, 2, W-1, H-1, WHITE);*/
 	}
 
 	sfw::termContext();

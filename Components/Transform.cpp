@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "sfwdraw.h"
 #include "flops.h"
+#include "shapedraw.h"
 
 using namespace sfw;
 
@@ -131,6 +132,9 @@ void Transform::debugDraw(const mat3 &t) const
 	vec3 pPos = m_parent ? t * m_parent->getGlobalTransform().c[2] : nPos;
 	drawLine(pPos.x, pPos.y, nPos.x, nPos.y, BLUE);
 
-	drawCircle(nPos.x, nPos.y, 6, 6, WHITE);
+	//drawCircle(nPos.x, nPos.y, 6, 6, WHITE);
+	spd::drawCircle(l * Circle{ 0,0,8 }, WHITE);
+
+	spd::drawAABB(l* AABB{ 0,0,10,10 }, CYAN);
 
 }

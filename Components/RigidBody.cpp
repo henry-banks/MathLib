@@ -62,9 +62,9 @@ void RigidBody::integrate(Transform & trans, float deltaTime)
 	torque = -angVel * angDrag;	
 }
 
-void RigidBody::debugDraw(const Transform & trans)
+void RigidBody::debugDraw(const Transform & trans, const mat3 & t)
 {
-	vec2 p = trans.pos;
+	vec2 p = (t * trans.getGlobalTransform()).c[2].xy;
 	vec2 v = p + velocity;
 	vec2 a = acc + p;
 
