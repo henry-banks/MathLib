@@ -168,6 +168,24 @@ vec2 fromAngle(float a)
 	return out;
 }
 
+vec2 min(const vec2 & a, const vec2 & b)
+{
+	vec2 out;
+	out.x = a.x < b.x ? a.x : b.x;
+	out.y = a.y < b.y ? a.y : b.y;
+
+	return out;
+}
+
+vec2 max(const vec2 & a, const vec2 & b)
+{
+	vec2 out;
+	out.x = a.x > b.x ? a.x : b.x;
+	out.y = a.y > b.y ? a.y : b.y;
+
+	return out;
+}
+
 float vec2::operator[](unsigned idx) const
 {
 	return v[idx];

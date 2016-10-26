@@ -116,9 +116,8 @@ void Transform::debugDraw(const mat3 &t) const
 
 	vec3 nPos = l.c[2];
 
-	vec3 right	= getGlobalTransform() * vec3{ 10,0,1 };
-	vec3 up		= getGlobalTransform() * vec3{ 0,12,1 };
-
+	vec3 right	= getGlobalTransform() * vec3{ 1,0,1 };
+	vec3 up		= getGlobalTransform() * vec3{ 0,1.5,1 };
 
 	/*drawLine(nPos.x, nPos.y, right.x, right.y, RED);
 	drawLine(nPos.x, nPos.y, up.x, up.y, GREEN);*/
@@ -134,7 +133,5 @@ void Transform::debugDraw(const mat3 &t) const
 
 	//drawCircle(nPos.x, nPos.y, 6, 6, WHITE);
 	spd::drawCircle(l * Circle{ 0,0,8 }, WHITE);
-
-	spd::drawAABB(l* AABB{ 0,0,10,10 }, CYAN);
 
 }

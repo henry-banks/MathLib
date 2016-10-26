@@ -4,7 +4,7 @@
 #include "Spaceship.h"
 #include "SpaceshipController.h"
 #include "ShipRender.h"
-#include "Tank.h"
+#include "shapedraw.h"
 #include <cstdlib>
 #include <vector>
 #include <string>
@@ -25,7 +25,6 @@ void drawMain()
 	//initContext(800,400);
 	initContext(W, H);
 	setBackgroundColor(0x222222ff);
-
 
 	unsigned f = loadTextureMap("./fontmap.png", 16, 16);
 
@@ -182,7 +181,7 @@ void drawMain()
 		//ST2.debugDraw(camera);
 
 		playerRender.draw(playerTransform, camera);
-		playerTransform.debugDraw(camera);
+		//playerTransform.debugDraw(camera);
 		playerBody.debugDraw(playerTransform, camera);
 
 	/*	ST3.updateDraw(deltaTime);
@@ -255,7 +254,7 @@ void drawTank()
 
 	while (stepContext())
 	{
-		Tank t;
+		//Tank t;
 
 	}
 	termContext();
