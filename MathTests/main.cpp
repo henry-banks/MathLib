@@ -8,6 +8,7 @@
 #include "mat2.h"
 #include "mat3.h"
 #include "Shapes.h"
+#include "collision.h"
 
 //Assertions
 void aTests()
@@ -184,6 +185,32 @@ void aTests()
 
 	assert((testBox.min() == vec2{-2, -2}));
 	assert((testBox.max() == vec2{ 4,6 }));
+
+
+	////////////////////////////////
+	//COLLISION TESTS
+	////////////////////////////////
+
+	assert(collisionDetection1D(0, 2, 1, 3).result() == true);
+
+	assert(collisionDetection1D(0, 2, 1, 3).penDepth == 1);
+	assert(collisionDetection1D(1, 3, 0, 2).penDepth == 1);
+
+	assert(collisionDetection1D(0, 2, 1, 3).colNormal = 1);
+	assert(collisionDetection1D(1, 3, 0, 2).colNormal == -1);
+
+
+	assert(sweptDetection1D(0, 1, 2,  3, 4, 0).entryTime == 1.f);
+	assert(sweptDetection1D(0, 1, 5,  3, 4, 0).entryTime == .4f);
+
+	assert(sweptDetection1D(0, 1, -5,  3, 4, 10).result() == false);
+
+	AABB A = { 0,0, 2,4 };
+	AABB B = { 2,2, 2,4 };
+
+	assert(boxCollision(A, B).penDepth == 2);
+	assert((boxCollision(A, B).colNormal == vec2{ 1,0 }));
+	assert((boxCollision(B, A).colNormal == vec2{ -1,0 }));
 
 	printf("All good :D\n\n");
 }
