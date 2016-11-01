@@ -47,6 +47,9 @@ void ShipRender::draw(const Transform & t, const mat3 & camera)
 	vec2 stuff[4] = { F1.xy, L1.xy, R1.xy, B1.xy };
 
 	spd::drawAABB(fromBoxAABB(stuff), BLUE);
+
+	spd::drawPlane(l * Plane{0,0, 0,1}, YELLOW);
+
 	//fromBoxAABB(p) replace AABB above with this(?)
 
 }

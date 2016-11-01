@@ -48,7 +48,7 @@ float InnerProd(Point3D p, Point3D q)
 	return (p.x * q.x) + (p.y * q.y) + (p.z * q.z);
 }
 
-float DistFromPlane(Plane p, Point3D x)
+float DistFromPlane(TestPlane p, Point3D x)
 {
 	//This is for debugging
 	float top = ((p.a*x.x) + (p.b*x.y) + (p.c*x.z) + p.d);
@@ -68,9 +68,9 @@ Point3D CubicBezier(float t, Point3D p0, Point3D p1, Point3D p2, Point3D p3)
 	return out;
 }
 
-Plane initp(float inA, float inB, float inC, float inD)
+TestPlane initp(float inA, float inB, float inC, float inD)
 {
-	Plane out;
+	TestPlane out;
 	out.a = inA;
 	out.b = inB;
 	out.c = inC;

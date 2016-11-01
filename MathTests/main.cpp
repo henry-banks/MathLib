@@ -10,8 +10,8 @@
 #include "Shapes.h"
 #include "collision.h"
 
-//Assertions
-void aTests()
+//Putting everything into functions so that I can collapse stuff.
+void mathTest()
 {
 	assert(Quadratic_y(0) == -7);
 	assert(Quadratic_y(-1) == -8);
@@ -40,8 +40,10 @@ void aTests()
 	/*assert(CubicBezier(0, init3(0, 0, 0), init3(1, 0, 0), init3(2, 0, 0), init3(4, 0, 0)).x == 0);
 	assert(CubicBezier(0, init3(0, 0, 0), init3(1, 0, 0), init3(2, 0, 0), init3(4, 0, 0)).x == 4);
 	assert(CubicBezier(0, init3(0, 0, 0), init3(1, 0, 0), init3(2, 0, 0), init3(4, 0, 0)).z == 0);*/
-
-	//Vector stuff
+}
+//NOT vec2/vec3
+void vectorTest()
+{
 	assert((vInit2(1, 2) + vInit2(2, 1)) == vInit2(3, 3));
 	assert((vInit2(1, 2) - vInit2(2, 1)) == vInit2(-1, 1));
 	assert((vInit2(1, 2) * 2) == vInit2(2, 4));
@@ -94,24 +96,23 @@ void aTests()
 	printf("%f\n", normalize(vInit3(5, 3, 6)).y);
 	printf("%f\n", normalize(vInit3(5, 3, 6)).z);
 	printf("%f\n", magnitude(normalize(vInit3(5, 3,6))));*/
-
-	//LERPS AND CURVES
+}
+void lerpCurveTest()
+{
 	assert(fequals(lerp(4, 23479, 0), 4));
 	assert(fequals(lerp(4, 23479, 1), 23479));
 	assert(fequals(lerp(0, 1, 0.5), 0.5));
 
 	assert(fequals(QuadBezier(15, 40, 21, 0), 15));
 	assert(fequals(QuadBezier(15, 40, 21, 1), 21));
-
-
+}
+void vec2Test()
+{
 	mat2 a0 = mat2{ 0,0,0,0 };
 	mat2 aI = mat2Identity();
 	mat2 r0 = mat2{ 4,3,2,1 };
 	vec2 x0 = vec2{ 1,0 };
 
-	////////////////////////////////
-	//VEC2 TESTS
-	////////////////////////////////
 	assert(a0 == a0);
 	assert(aI * 2 == 2 * aI);
 	assert((aI * 2 == mat2{ 2,0,0,2 }));
@@ -129,17 +130,14 @@ void aTests()
 	assert(inverse(aI) == aI);
 
 	assert(r0*inverse(r0) == aI);
-
-
-
+}
+void vec3Test()
+{
 	mat3 m0 = mat3{ 0,0,0,0,0,0,0,0,0 };
 	mat3 mI = mat3Identity();
 	mat3 t0 = mat3{ 9,8,7,6,5,4,3,2,1 };
 	vec3 v0 = vec3{ 2,1,0 };
 
-	////////////////////////////////
-	//VEC3 TESTS
-	////////////////////////////////
 	assert(m0 == m0);
 	assert(mI * 2 == 2 * mI);
 	assert((mI * 2 == mat3{ 2,0,0,0,2,0,0,0,2 }));
@@ -154,43 +152,36 @@ void aTests()
 	assert(inverse(mI) == mI);
 
 	//assert(t0 * inverse(t0) == mI);
-
-	////////////////////////////////
-	//TRANSLATION TESTS
-	////////////////////////////////
+}
+void translateTest()
+{
 	vec3 j = { 2,5,1 };
 	assert((scale(5, 1)* j == vec3{ 10,5,1 }));
 	//assert((rotationDegrees(90) == mat3{ 0,-1,0,1,0,0,0,0,1 }));
 	//assert((rotationDegrees(90)* j == vec3{ -5,2,1 }));
 	//assert((translate(0, 3) == mat3{ 1,0,0,0,1,3,0,0,1 }));
 	//assert((translate(0, 3)* j == vec3{ 2,8,1 }));
-
-
-	////////////////////////////////
-	//GEOMETRY TESTS
-	////////////////////////////////
-
+}
+void geometryTest()
+{
 	Circle c = { 0,0,5 };
 
-	assert((translate(4, 0) * c == Circle{ 4,0,5 }));
+assert((translate(4, 0) * c == Circle{ 4,0,5 }));
 
-	assert((scale(2, 1) * c == Circle{ 0,0,10 }));
-	assert((scale(2, 2) * c == Circle{ 0,0,10 }));
-	assert((scale(1, 2) * c == Circle{ 0,0,10 }));
+assert((scale(2, 1) * c == Circle{ 0,0,10 }));
+assert((scale(2, 2) * c == Circle{ 0,0,10 }));
+assert((scale(1, 2) * c == Circle{ 0,0,10 }));
 
-	assert((scale(-1, 1) * c == Circle{ 0,0,5 }));
-	assert((rotationDegrees(45) * c == Circle{ 0,0,5 }));
+assert((scale(-1, 1) * c == Circle{ 0,0,5 }));
+assert((rotationDegrees(45) * c == Circle{ 0,0,5 }));
 
-	AABB testBox{ vec2{1, 2}, vec2{3, 4} };
+AABB testBox{ vec2{ 1, 2 }, vec2{ 3, 4 } };
 
-	assert((testBox.min() == vec2{-2, -2}));
-	assert((testBox.max() == vec2{ 4,6 }));
-
-
-	////////////////////////////////
-	//COLLISION TESTS
-	////////////////////////////////
-
+assert((testBox.min() == vec2{ -2, -2 }));
+assert((testBox.max() == vec2{ 4,6 }));
+}
+void collisionTest()
+{
 	assert(collisionDetection1D(0, 2, 1, 3).result() == true);
 
 	assert(collisionDetection1D(0, 2, 1, 3).penDepth == 1);
@@ -200,10 +191,10 @@ void aTests()
 	assert(collisionDetection1D(1, 3, 0, 2).colNormal == -1);
 
 
-	assert(sweptDetection1D(0, 1, 2,  3, 4, 0).entryTime == 1.f);
-	assert(sweptDetection1D(0, 1, 5,  3, 4, 0).entryTime == .4f);
+	assert(sweptDetection1D(0, 1, 2, 3, 4, 0).entryTime == 1.f);
+	assert(sweptDetection1D(0, 1, 5, 3, 4, 0).entryTime == .4f);
 
-	assert(sweptDetection1D(0, 1, -5,  3, 4, 10).result() == false);
+	assert(sweptDetection1D(0, 1, -5, 3, 4, 10).result() == false);
 
 	AABB A = { 0,0, 2,4 };
 	AABB B = { 2,2, 2,4 };
@@ -211,6 +202,45 @@ void aTests()
 	assert(boxCollision(A, B).penDepth == 2);
 	assert((boxCollision(A, B).colNormal == vec2{ 1,0 }));
 	assert((boxCollision(B, A).colNormal == vec2{ -1,0 }));
+
+	AABB As = { 0,0, 1,1 };
+	AABB Bs = { 0,10, 1,1 };
+
+	CollisionDataSwept testSwept = boxCollisionSwept(As, vec2{ 0,-1 }, Bs, vec2{ 0,-1 });
+
+	assert(fequals(boxCollisionSwept(As, vec2{ 0,1 }, Bs, vec2{ 0,-1 }).entryTime, 4));
+	assert(fequals(boxCollisionSwept(As, vec2{ 0,1 }, Bs, vec2{ 0,-1 }).exitTime, 6));
+
+	//Either -4 or -6
+	assert(fequals(boxCollisionSwept(As, vec2{ 0,-1 }, Bs, vec2{ 0,1 }).entryTime, -6));
+
+	AABB bP = { 0,0, 4,4 };
+
+	Plane p1 = { 0,0, 0,1 };	//clipping case
+	Plane p2 = { 0,-10, 0,1 };	//non-overlapping
+	Plane p3 = { 0,10, 0,1 };	//full overlapping
+
+	Plane p4 = { vec2{6,6}, normalize(vec2{-1,1}) };	//overlapping
+	Plane p5 = { vec2{6,6}, normalize(vec2{-1,-1}) };	//non-overlapping
+
+	assert(planeBoxCollision(p1, bP).result());
+	assert(!planeBoxCollision(p2, bP).result());
+	assert(planeBoxCollision(p3, bP).result());
+	assert(planeBoxCollision(p4, bP).result());
+	assert(!planeBoxCollision(p5, bP).result());
+}
+
+//Assertions
+void aTests()
+{
+	mathTest();
+	vectorTest();
+	lerpCurveTest();
+	vec2Test();
+	vec3Test();
+	translateTest();
+	geometryTest();
+	collisionTest();
 
 	printf("All good :D\n\n");
 }

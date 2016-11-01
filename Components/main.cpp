@@ -244,22 +244,6 @@ void drawText()
 	system("pause");
 }
 
-void drawTank()
-{
-	float W = 800, H = 800;
-	initContext(W, H);
-	setBackgroundColor(0x222222ff);
-
-	
-
-	while (stepContext())
-	{
-		//Tank t;
-
-	}
-	termContext();
-}
-
 void main()
 {
 	drawMain();

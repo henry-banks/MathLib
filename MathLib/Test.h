@@ -24,12 +24,12 @@ struct Point3D
 };
 Point3D init3(float inX, float inY, float inZ);
 
-struct Plane
+struct TestPlane
 {
 	//a and b represent two opposite corners
 	float a, b, c, d;
 };
-Plane initp(float inA, float inB, float inC, float inD);
+TestPlane initp(float inA, float inB, float inC, float inD);
 
 //STATIC quadratic formula, returns y-coord of given x-coord
 float Quadratic_y(float x);
@@ -42,6 +42,6 @@ float Distance(Point2D p1, Point2D p2);
 //Returns inner product of given points
 float InnerProd(Point3D p, Point3D q);
 //Returns distance of point from given plane
-float DistFromPlane(Plane p, Point3D x);
+float DistFromPlane(TestPlane p, Point3D x);
 //Returns something that I assume has to do with bezier curves but I don't know what
 Point3D CubicBezier(float t, Point3D p0, Point3D p1, Point3D p2, Point3D p3);

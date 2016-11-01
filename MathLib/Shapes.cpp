@@ -83,9 +83,18 @@ AABB fromBoxAABB(const vec2 p[])
 	return out;
 }
 
-CPlane operator*(const mat3 & t, const CPlane & p)
+Plane operator*(const mat3 & t, const Plane & p)
 {
-	return CPlane();
+	Plane out;
+	out.pos = (t * vec3{ p.pos.x, p.pos.y, 1 }).xy;
+	out.dir = normalize(t * vec3{ p.dir.x, p.dir.y, 0 }).xy;
+
+	return out;
+}
+
+bool operator==(const Plane & a, const Plane & b)
+{
+	return (a.pos == b.pos) && (a.dir == b.dir);
 }
 
 Ray operator*(const mat3 & t, const Ray & r)

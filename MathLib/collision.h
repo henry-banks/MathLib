@@ -40,3 +40,19 @@ struct CollisionData
 };
 
 CollisionData boxCollision(const AABB &a, const AABB &b);
+
+
+struct CollisionDataSwept
+{
+	//Penetration depth
+	float entryTime, exitTime;
+	//Collision normal
+	vec2 colNormal;
+
+	bool result() const;
+};
+
+CollisionDataSwept boxCollisionSwept(const AABB &a, const vec2 &dA,
+						   const AABB &b, const vec2 &dB);
+
+CollisionData planeBoxCollision(const Plane &p, const AABB &b);

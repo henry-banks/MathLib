@@ -7,5 +7,5 @@ namespace spd
 	
 	void drawAABB(const AABB &box, unsigned color);
 
-	//void drawPlane(const CPlane &p);
+	void drawPlane(const Plane &p, unsigned color);
 }
