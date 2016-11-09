@@ -1,5 +1,6 @@
 #include "collision.h"
 #include "vec2.h"
+#include <vector>
 #include <math.h>
 
 CollisionData1D collisionDetection1D(float aMin, float aMax, float bMin, float bMax)
@@ -96,42 +97,119 @@ CollisionData planeBoxCollision(const Plane & p, const AABB & b)
 	vec2 point4 = vec2{ b.max().x, b.min().y };
 
 	//Project points (will probably condense into above)
-	float p1Proj = dotProd(point1, p.dir);
-	float p2Proj = dotProd(point2, p.dir);
-	float p3Proj = dotProd(point3, p.dir);
-	float p4Proj = dotProd(point4, p.dir);
+	float p1Proj = dotProd(p.dir, point1);
+	float p2Proj = dotProd(p.dir, point2);
+	float p3Proj = dotProd(p.dir, point3);
+	float p4Proj = dotProd(p.dir, point4);
 
 	float minPoint = fminf(fminf(p1Proj, p2Proj), fminf(p3Proj, p4Proj));
 	float maxPoint = fmaxf(fmaxf(p1Proj, p2Proj), fmaxf(p3Proj, p4Proj));
 
 	//Point to test against
-	float planeExtent = dotProd(p.pos, p.dir);
+	float planeExtent = dotProd(p.dir, p.pos);
 
 	//base penetration depth
 	float pd = planeExtent - minPoint;
 
-	//THIS IS STUPID
-	//that other thing
-	//float pdMax = planeExtent - maxPoint;
-
-	//
-	//if (pd < 0) {
-	//	//sum shit
-	//}
-	//else if (pdMax >= 0) {
-	//	//other shit
-	//}
-	//else if (pdMax < 0 && pd >= 0) {
-	//	//clipping shit
-	//}
 
 	//THIS IS THE IMPORTANT PART.
-	CollisionData1D stuff = collisionDetection1D(minPoint, maxPoint, planeExtent, INFINITY);
-	out.penDepth = pd;
-	out.colNormal = vec2{stuff.colNormal, stuff.colNormal};
+	out.penDepth = planeExtent - minPoint;
+	out.colNormal = p.dir;
 
 	return out;
 }
+
+CollisionDataSwept planeBoxCollisionSwept(const Plane & p, const vec2 & pVel, const AABB & b, const vec2 & bVel)
+{
+	CollisionDataSwept out;
+
+	//Project points (goes counter-clockwise from max)
+	float p1 = dotProd(p.dir, b.max());
+	float p2 = dotProd(p.dir, vec2{ b.min().x, b.max().y });
+	float p3 = dotProd(p.dir, b.min());
+	float p4 = dotProd(p.dir, vec2{ b.max().x, b.min().y });
+
+	float pMin = fminf(fminf(p1, p2), fminf(p3, p4));
+	float pMax = fmaxf(fmaxf(p1, p2), fmaxf(p3, p4));
+
+	float pBvel = dotProd(p.dir, bVel);
+	float pPvel = dotProd(p.dir, pVel);
+	
+	float planeExtent = dotProd(p.dir, p.pos);
+
+	out.entryTime = (pMin - pMax) / (pPvel - pBvel);
+	out.exitTime = (pMax - planeExtent) / (pPvel - pBvel);
+
+	return out;
+}
+
+CollisionData HullCollision(const Hull & a, const Hull & b)
+{
+	CollisionData out;
+	//Make a list of ALL projected points
+	std::vector<std::vector<float>> allPoints;
+
+	//Project ALL points along ALL axes
+	for (int i = 0; i < a.size + b.size; i++)
+	{
+		//A-axis projection
+		std::vector<float> tempPoints;
+		for (int j = 0; j < a.size; j++)
+		{
+			tempPoints.push_back(dotProd(a.normals[i], a.vertices[j]));
+		}
+		for (int j = 0; j < a.size; j++)
+		{
+			tempPoints.push_back(dotProd(a.normals[i], b.vertices[j]));
+		}
+
+		//B-axis projection
+		for (int j = 0; j < a.size; j++)
+		{
+			tempPoints.push_back(dotProd(b.normals[i], a.vertices[j]));
+		}
+		for (int j = 0; j < a.size; j++)
+		{
+			tempPoints.push_back(dotProd(b.normals[i], b.vertices[j]));
+		}
+		allPoints.push_back(tempPoints);
+	}
+
+	return out;
+}
+
+CollisionData HullColAxis(const Hull & a, const Hull & b, const vec2 & normal, int index)
+{
+	CollisionData out;
+
+	//Set min/max
+	float aMax = dotProd(normal, a.vertices[0]);
+	float aMin = dotProd(normal, a.vertices[0]);
+	float bMax = dotProd(normal, b.vertices[0]);
+	float bMin = dotProd(normal, b.vertices[0]);
+	//Project a-vertices
+	for (int i = 0; i < a.size; i++)
+	{
+		float tempPos = dotProd(normal, a.vertices[i]);
+		if (tempPos > aMax)
+			aMax = tempPos;
+		else if (tempPos < aMin)
+			aMin = tempPos;
+	}
+
+	//Project b-vertices
+	for (int i = 0; i < b.size; i++)
+	{
+		float tempPos = dotProd(normal, b.vertices[i]);
+		if (tempPos > bMax)
+			bMax = tempPos;
+		else if (tempPos < bMin)
+			bMin = tempPos;
+	}
+
+	return out;
+}
+
 
 bool SweptCollisionData1D::result() const
 {

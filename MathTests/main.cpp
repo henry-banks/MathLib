@@ -228,6 +228,32 @@ void collisionTest()
 	assert(planeBoxCollision(p3, bP).result());
 	assert(planeBoxCollision(p4, bP).result());
 	assert(!planeBoxCollision(p5, bP).result());
+
+	Plane p6 = { 10,0, -1,0 }; //fully overlapping
+
+	//assert(fequals(planeBoxCollisionSwept(p6, vec2{ 0,0 }, bP, vec2{ 1,0 }).entryTime, 6.f));
+
+	//Convex hull
+	vec2 verts[] = { {0,1},{1,1},{1,0},{0,0} };
+	vec2 verts2[] = { {-1,-1},{-1,1},{0,0} };
+
+	Hull h1(verts, 4);
+	Hull h2(verts2, 3);
+
+	assert((h1.normals[0] == vec2{ 0,1 }));
+	assert((h1.normals[1] == vec2{ 1,0 }));
+	assert((h1.normals[2] == vec2{ 0,-1 }));
+	assert((h1.normals[3] == vec2{ -1,0 }));
+
+	Hull tHull = translate(1, 0) * h1;
+
+	assert((tHull.vertices[0] == vec2{ 1,1 }));
+	assert((tHull.vertices[1] == vec2{ 2,1 }));
+	assert((tHull.vertices[2] == vec2{ 2,0 }));
+	assert((tHull.vertices[3] == vec2{ 1,0 }));
+
+	assert(fequals(HullCollision(h1, h2).penDepth, 0));
+	assert(fequals(HullCollision(h1, tHull).penDepth, -1));
 }
 
 //Assertions

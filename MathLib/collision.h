@@ -56,3 +56,9 @@ CollisionDataSwept boxCollisionSwept(const AABB &a, const vec2 &dA,
 						   const AABB &b, const vec2 &dB);
 
 CollisionData planeBoxCollision(const Plane &p, const AABB &b);
+CollisionDataSwept planeBoxCollisionSwept(const Plane &p, const vec2 &pVel,
+										   const AABB &b, const vec2 &bVel);
+
+CollisionData HullCollision(const Hull &a, const Hull &b);
+//Evaluates 
+CollisionData HullColAxis(const Hull & a, const Hull & b, const vec2 &normal, int index);

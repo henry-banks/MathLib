@@ -104,7 +104,32 @@ Ray operator*(const mat3 & t, const Ray & r)
 
 Hull operator*(const mat3 & t, const Hull & h)
 {
-	return Hull();
+	Hull out;
+	out.size = h.size;
+	//Multiply vertices and normals by matrix
+	for (int i = 0; i < out.size; i++)
+	{
+		out.vertices[i] = (t * vec3{h.vertices[i].x, h.vertices[i].y, 1 }).xy;
+		out.normals[i] = (t * vec3{ h.normals[i].x, h.normals[i].y, 0 }).xy;
+	}
+
+	return out;
+}
+
+bool operator==(const Hull & a, const Hull & b)
+{
+	//If the hulls are not the same size, they are not equal
+	if (a.size != b.size)
+		return false;
+
+	//Compare vertices and normals
+	for (int i = 0; i < a.size; i++)
+	{
+		if (a.vertices[i] != b.vertices[i] || a.normals[i] != b.normals[i])
+			return false;
+	}
+
+	return true;
 }
 
 vec2 AABB::min() const
@@ -117,4 +142,20 @@ vec2 AABB::max() const
 {
 	vec2 out = pos + he;
 	return out;
+}
+
+Hull::Hull(const vec2 inVertices[], unsigned inSize)
+{
+	size = inSize;
+	for (int i = 0; i < inSize && i < 16; i++)
+	{
+		vertices[i] = inVertices[i];
+		//i+1 % size will give us the first one when we get to the end
+		normals[i] = -perp(normalize(inVertices[(i+1) % size] - inVertices[i]));
+	}
+}
+
+Hull::Hull()
+{
+	size = 0;
 }
