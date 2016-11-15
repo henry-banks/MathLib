@@ -11,16 +11,14 @@
 
 //SpaceObject #include's everything else so I don't need to #include it here
 #include "SpaceObject.h"
+#include "Collider.h"
 
 using namespace sfw;
 using namespace std;
 
-void drawMain()
+void drawPlanet()
 {
 	float W = 1600, H = 1000;
-	float margin = 10;
-	float steps = 100;
-	float maxSpeed = 100;
 
 	//initContext(800,400);
 	initContext(W, H);
@@ -119,6 +117,10 @@ void drawMain()
 
 	Transform cameraTransform;
 
+	//Collider setup
+	vec2 hullVerts[] = { {0,20}, {-10,-10},{10,-10} };
+	Collider playerCollider(hullVerts, 3);
+
 	while (stepContext())
 	{
 
@@ -180,9 +182,9 @@ void drawMain()
 		//ST1.debugDraw(camera);
 		//ST2.debugDraw(camera);
 
-		playerRender.draw(playerTransform, camera);
+		//playerRender.draw(playerTransform, camera);
 		//playerTransform.debugDraw(camera);
-		playerBody.debugDraw(playerTransform, camera);
+		//playerBody.debugDraw(playerTransform, camera);
 
 	/*	ST3.updateDraw(deltaTime);
 		ST4.updateDraw(deltaTime);*/
@@ -215,6 +217,8 @@ void drawMain()
 		drawString(f, xpos.c_str(), 5, 20, 12, 12, 0, '\0', WHITE);
 		drawString(f, ypos.c_str(), 175, 20, 12, 12, 0, '\0', WHITE);
 
+		playerCollider.DebugDraw(camera, playerTransform);
+
 		//Draw borders
 		/*drawLine(2, 2, W-1, 2, WHITE);
 		drawLine(2, 2, 2, H-1, WHITE);
@@ -223,6 +227,205 @@ void drawMain()
 	}
 
 	sfw::termContext();
+}
+
+void drawCollision()
+{
+	float W = 1600, H = 1000;
+
+	//initContext(800,400);
+	initContext(W, H);
+	setBackgroundColor(0x222222ff);
+
+	unsigned f = loadTextureMap("./fontmap.png", 16, 16);
+	Transform playerTransform = { W / 2,H / 2 };
+	playerTransform.scl = vec2{ 4,4 };
+
+	RigidBody playerBody;
+	Spaceship playerShip;
+	SpaceshipController control;
+
+	Transform cameraTransform;
+
+	//Collider setup
+	vec2 hullVerts[] = { { 0,2 },{ -1,-1 },{ 1,-1 } };
+	Collider playerCollider(hullVerts, 3);
+
+	Transform occluderTrans(0, 0);
+	occluderTrans.scl = vec2{ 20,20 };
+	Collider occluderCollider(hullVerts, 3);
+	RigidBody occluderBody;
+
+	while (stepContext())
+	{
+		float deltaTime = getDeltaTime();
+
+		//Temporary reset key
+		if (getKey('Q'))
+			playerTransform.pos = vec2{ W / 2,H / 2 };
+
+		//Player controls
+		control.update(playerShip);
+		playerShip.update(playerTransform, playerBody);
+		playerBody.integrate(playerTransform, deltaTime);
+
+
+		occluderBody.integrate(occluderTrans, deltaTime);
+
+		//Camera stuff
+		cameraTransform.pos = playerTransform.pos;
+		mat3 proj = translate(W / 2, H / 2) * scale(15, 15);
+		mat3 view = inverse(cameraTransform.getGlobalTransform());
+		mat3 camera = proj * view;
+
+		//collision
+		DynamicResolution(playerTransform, playerBody, playerCollider, occluderTrans, occluderBody, occluderCollider);
+		//Draw coordinates
+		string xpos = to_string(playerTransform.pos.x - W / 2);
+		string ypos = to_string(playerTransform.pos.y - H / 2);
+
+		drawString(f, xpos.c_str(), 5, 20, 12, 12, 0, '\0', WHITE);
+		drawString(f, ypos.c_str(), 175, 20, 12, 12, 0, '\0', WHITE);
+
+		playerCollider.DebugDraw(camera, playerTransform);
+		occluderCollider.DebugDraw(camera, occluderTrans);
+
+		playerBody.debugDraw(playerTransform, camera);
+		occluderBody.debugDraw(occluderTrans, camera);
+	}
+
+	sfw::termContext();
+}
+
+//WARNING: VERY LARGE
+void drawAll()
+{
+	float W = 1600, H = 1000;
+
+	//initContext(800,400);
+	initContext(W, H);
+	setBackgroundColor(0x222222ff);
+
+	unsigned f = loadTextureMap("./fontmap.png", 16, 16);
+
+	Transform playerTransform = { W / 2,H / 2 };
+	Transform ST1 = { -15, -40 };
+	Transform ST2 = { 15, -40 };
+	SpaceObject ST3;
+	SpaceObject ST4;
+
+	ShipRender playerRender;
+
+	ST3.init(vec2{ 0, 0 }, vec2{ 2,2 }, 50, WHITE, 6, &playerTransform);
+	ST4.init(vec2{ 30,0 }, vec2{ 1,1 }, 50, CYAN, 3, &ST3.trans);
+
+	ST1.m_parent = &playerTransform;
+	ST2.m_parent = &playerTransform;
+
+	//SETTING UP A BUNCH OF STUFF
+
+	RigidBody playerBody;
+	Spaceship playerShip;
+	SpaceshipController control;
+
+	SpaceObject sun;
+	sun.init(vec2{ W / 2, H / 2 }, vec2{ 10, 10 }, 20, YELLOW, 60, nullptr);
+
+	SpaceObject p1;
+	p1.init(vec2{ 5,-5 }, vec2{ 10, 10 }, 20, WHITE, 5, &sun.trans);
+
+	SpaceObject p2;
+	p2.init(vec2{ -10,5 }, vec2{ 5,5 }, 50, 0xfc9432ff, 10, &sun.trans);
+	SpaceObject m1;
+	m1.init(vec2{ .5,0 }, vec2{ 1,1 }, 30, WHITE, 2, &p2.trans);
+
+	SpaceObject p3;
+	p3.init(vec2{ 8,-16 }, vec2{ 5,5 }, 50, GREEN, 10, &sun.trans);
+
+	SpaceObject p4;
+	p4.init(vec2{ -10,30 }, vec2{ 5,5 }, 50, CYAN, 20, &sun.trans);
+	SpaceObject m2;
+	m2.init(vec2{ .75,0 }, vec2{ 1,1 }, 20, WHITE, 2, &p4.trans);
+	SpaceObject m3;
+	m3.init(vec2{ -1,0 }, vec2{ 1,1 }, 40, WHITE, 3, &p4.trans);
+
+	SpaceObject p5;
+	p5.init(vec2{ -30,-20 }, vec2{ 5,5 }, 50, MAGENTA, 30, &sun.trans);
+
+	SpaceObject p6;
+	p5.init(vec2{ 50,50 }, vec2{ 5,5 }, 20, 0x4287d6ff, 40, &sun.trans);
+
+	SpaceObject p7;
+	p7.init(vec2{ -500,-500 }, vec2{ 5,5 }, 30, 0xceb514ff, 40, &sun.trans);
+
+	SpaceObject p8;
+	p8.init(vec2{ -30,-27 }, vec2{ 2,2 }, 15, 0x7e3b8eff, 40, &sun.trans);
+
+	Transform cameraTransform;
+
+	//Collider setup
+	vec2 hullVerts[] = { { 0,20 },{ -10,-10 },{ 10,-10 } };
+	Collider playerCollider(hullVerts, 3);
+
+	Transform occluderTrans(0, 0);
+	occluderTrans.scl = vec2{ 20,20 };
+	Collider occluderCollider(hullVerts, 3);
+	RigidBody occluderBody;
+
+	while (stepContext())
+	{
+		float deltaTime = getDeltaTime();
+
+		//Temporary reset key
+		if (getKey('Q'))
+			playerTransform.pos = vec2{ W / 2,H / 2 };
+
+		//Player controls
+		control.update(playerShip);
+		playerShip.update(playerTransform, playerBody);
+		playerBody.integrate(playerTransform, deltaTime);
+
+
+		occluderBody.integrate(occluderTrans, deltaTime);
+
+		//Camera stuff
+		cameraTransform.pos = playerTransform.pos;
+		mat3 proj = translate(W / 2, H / 2) * scale(15, 15);
+		mat3 view = inverse(cameraTransform.getGlobalTransform());
+		mat3 camera = proj * view;
+
+
+		sun.updateDraw(deltaTime, camera);
+		p1.updateDraw(deltaTime, camera);
+		p2.updateDraw(deltaTime, camera);
+		m1.updateDraw(deltaTime, camera);
+		p3.updateDraw(deltaTime, camera);
+		p4.updateDraw(deltaTime, camera);
+		p5.updateDraw(deltaTime, camera);
+		m2.updateDraw(deltaTime, camera);
+		m3.updateDraw(deltaTime, camera);
+		p6.updateDraw(deltaTime, camera);
+		p7.updateDraw(deltaTime, camera);
+		p8.updateDraw(deltaTime, camera);
+
+		//collision
+		DynamicResolution(playerTransform, playerBody, playerCollider, occluderTrans, occluderBody, occluderCollider);
+		//Draw coordinates
+		string xpos = to_string(playerTransform.pos.x - W / 2);
+		string ypos = to_string(playerTransform.pos.y - H / 2);
+
+		drawString(f, xpos.c_str(), 5, 20, 12, 12, 0, '\0', WHITE);
+		drawString(f, ypos.c_str(), 175, 20, 12, 12, 0, '\0', WHITE);
+
+		playerCollider.DebugDraw(camera, playerTransform);
+		occluderCollider.DebugDraw(camera, occluderTrans);
+
+		playerBody.debugDraw(playerTransform, camera);
+		occluderBody.debugDraw(occluderTrans, camera);
+	}
+
+	sfw::termContext();
+
 }
 
 void drawText()
@@ -246,5 +449,5 @@ void drawText()
 
 void main()
 {
-	drawMain();
+	drawAll();
 }

@@ -26,3 +26,12 @@ void spd::drawPlane(const Plane & p, unsigned color)
 	sfw::drawLine(p.pos.x, p.pos.y, (p.pos.x + left.x * 80), (p.pos.y + left.y * 80) , RED);
 }
 
+void spd::drawHull(const Hull & h, unsigned color)
+{
+	for (int i = 0; i < h.size && i < 16; i++)
+	{
+		sfw::drawLine(h.vertices[i].x, h.vertices[i].y, h.vertices[(i + 1) % h.size].x, h.vertices[(i + 1) % h.size].y, color);
+	}
+
+}
+

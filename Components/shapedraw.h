@@ -8,4 +8,6 @@ namespace spd
 	void drawAABB(const AABB &box, unsigned color);
 
 	void drawPlane(const Plane &p, unsigned color);
+
+	void drawHull(const Hull &h, unsigned color);
 }

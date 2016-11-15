@@ -1,6 +1,7 @@
 #include "ShipRender.h"
 #include "sfwdraw.h"
 #include "shapedraw.h"
+#include "Collider.h"
 
 using namespace sfw;
 
@@ -39,16 +40,19 @@ void ShipRender::draw(const Transform & t, const mat3 & camera)
 	vec3 R1 = l * vec3{ 4, -7,  1 }*size;
 	vec3 B1 = l * vec3{ 4, 7,  1 }*size;
 
-	sfw::drawLine(L1.x, L1.y, F1.x, F1.y, 0x888888FF);
-	sfw::drawLine(F1.x, F1.y, R1.x, R1.y, 0x888888FF);
-	sfw::drawLine(R1.x, R1.y, B1.x, B1.y, 0x888888FF);
-	sfw::drawLine(B1.x, B1.y, L1.x, L1.y, 0x888888FF);
+	//sfw::drawLine(L1.x, L1.y, F1.x, F1.y, 0x888888FF);
+	//sfw::drawLine(F1.x, F1.y, R1.x, R1.y, 0x888888FF);
+	//sfw::drawLine(R1.x, R1.y, B1.x, B1.y, 0x888888FF);
+	//sfw::drawLine(B1.x, B1.y, L1.x, L1.y, 0x888888FF);
 
 	vec2 stuff[4] = { F1.xy, L1.xy, R1.xy, B1.xy };
 
-	spd::drawAABB(fromBoxAABB(stuff), BLUE);
+	//spd::drawAABB(fromBoxAABB(stuff), BLUE);
 
-	spd::drawPlane(l * Plane{0,0, 0,1}, YELLOW);
+	Collider playerCollider(stuff, size);
+	playerCollider.DebugDraw(camera, t);
+
+	//spd::drawPlane(l * Plane{0,0, 0,1}, YELLOW);
 
 	//fromBoxAABB(p) replace AABB above with this(?)
 

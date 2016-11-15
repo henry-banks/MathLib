@@ -186,6 +186,16 @@ vec2 max(const vec2 & a, const vec2 & b)
 	return out;
 }
 
+vec2 project(const vec2 &i, const vec2 &n)
+{
+	return dotProd(i, normalize(n)) * normalize(n);
+}
+
+vec2 reflect(const vec2 &i, const vec2 &n)
+{
+	return i - 2*project(i,n);
+}
+
 float vec2::operator[](unsigned idx) const
 {
 	return v[idx];

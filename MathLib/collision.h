@@ -60,5 +60,7 @@ CollisionDataSwept planeBoxCollisionSwept(const Plane &p, const vec2 &pVel,
 										   const AABB &b, const vec2 &bVel);
 
 CollisionData HullCollision(const Hull &a, const Hull &b);
-//Evaluates 
-CollisionData HullColAxis(const Hull & a, const Hull & b, const vec2 &normal, int index);
+CollisionDataSwept HullCollisionSwept(const Hull &a, const vec2 &dA, const Hull &b, const vec2 &db);
+
+//For quickly evaluating groups of hulls
+CollisionData HullCollisionGroup(const Hull a[], unsigned aSize, const Hull b[], unsigned bSize);

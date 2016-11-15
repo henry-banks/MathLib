@@ -45,7 +45,8 @@ AABB operator*(const mat3 & t, const AABB & b)
 		minv = min(minv, tp[i].xy);
 		maxv = max(maxv, tp[i].xy);
 	}
-
+	out.pos = (minv + maxv) / 2;
+	out.he = (maxv - minv) / 2;
 
 	return out;
 }
@@ -55,30 +56,19 @@ AABB fromBoxAABB(const vec2 p[])
 	AABB out;
 
 	//Setting up values to test against.
-	//I set them all to a certain point's values because I
-	//cannot effectively guess what the points' coordinates will be.
-	float maxX = p[0].x;
-	float minX = p[0].x;
-	float maxY = p[0].y;
-	float minY = p[0].y;
+	vec2 minv{ INFINITY, INFINITY };
+	vec2 maxv{ -INFINITY, -INFINITY};
 
+	//Find min and max vertices
 	for (int i = 0; i < 4; i++)
 	{
-		if (p[i].x > maxX)
-			maxX = p[i].x;
-		else if (p[i].x < minX)
-			minX = p[i].x;
-
-		if (p[i].y > maxY)
-			maxY = p[i].y;
-		else if (p[i].y < minY)
-			minY = p[i].y;
+		minv = min(minv, p[i]);
+		maxv = max(maxv, p[i]);
 	}
-	//Set position to be the midpoint between the max and min points
-	out.pos = vec2{ (maxX + minX) / 2,(maxY + minY) / 2 };
-	//Set half-extents to be distance between position and max point
-	//Max point used so that the values will be positive
-	out.he = vec2{ maxX - out.pos.x, maxY - out.pos.y };
+
+	//math-y math-ness
+	out.pos = (minv + maxv) / 2;
+	out.he = (maxv - minv) / 2;
 
 	return out;
 }
@@ -110,7 +100,7 @@ Hull operator*(const mat3 & t, const Hull & h)
 	for (int i = 0; i < out.size; i++)
 	{
 		out.vertices[i] = (t * vec3{h.vertices[i].x, h.vertices[i].y, 1 }).xy;
-		out.normals[i] = (t * vec3{ h.normals[i].x, h.normals[i].y, 0 }).xy;
+		out.normals[i] = normalize((t * vec3{ h.normals[i].x, h.normals[i].y, 0 }).xy);
 	}
 
 	return out;

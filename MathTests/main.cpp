@@ -253,7 +253,16 @@ void collisionTest()
 	assert((tHull.vertices[3] == vec2{ 1,0 }));
 
 	assert(fequals(HullCollision(h1, h2).penDepth, 0));
-	assert(fequals(HullCollision(h1, tHull).penDepth, -1));
+	assert(fequals(HullCollision(h2, tHull).penDepth, -1));
+}
+void vecColTests()
+{
+	vec2 v1 = { -1,-1 };
+	vec2 xaxis = { 1,0 };
+	vec2 v2 = { -1,-1 };
+
+	assert((project(v1, xaxis) == -xaxis));
+	assert((reflect(v1, xaxis) == vec2{ 1,-1 }));
 }
 
 //Assertions
@@ -267,8 +276,9 @@ void aTests()
 	translateTest();
 	geometryTest();
 	collisionTest();
+	vecColTests();
 
-	printf("All good :D\n\n");
+	printf("PRAISE THE SUN!\n \\[T]/");
 }
 
 void MatrixTest1()

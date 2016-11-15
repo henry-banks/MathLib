@@ -48,3 +48,7 @@ vec2 fromAngle(float a);
 
 vec2 min(const vec2 &a, const vec2 &b);
 vec2 max(const vec2 &a, const vec2 &b);
+
+//collision stuff
+vec2 project(const vec2 &i, const vec2 &n);
+vec2 reflect(const vec2 &i, const vec2 &n);

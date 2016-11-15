@@ -146,65 +146,80 @@ CollisionDataSwept planeBoxCollisionSwept(const Plane & p, const vec2 & pVel, co
 CollisionData HullCollision(const Hull & a, const Hull & b)
 {
 	CollisionData out;
+	out.penDepth = INFINITY;	//Default value
+
 	//Make a list of ALL projected points
-	std::vector<std::vector<float>> allPoints;
+	int size = 0;
+	vec2 axes[32];	//Maximum 32 axes
 
-	//Project ALL points along ALL axes
-	for (int i = 0; i < a.size + b.size; i++)
+	//Put all axes into array
+	for (int i = 0; i < a.size; i++)
+		axes[size++] = a.normals[i];
+	for (int i = 0; i < b.size; i++)
+		axes[size++] = b.normals[i];
+
+	//Evaluate penetration depth
+	for (int i = 0; i < size; i++)
 	{
-		//A-axis projection
-		std::vector<float> tempPoints;
-		for (int j = 0; j < a.size; j++)
+		//Current axis
+		vec2 axis = axes[i];
+		//Set min to +infinity because ANY minimum will be smaller than that
+		//Set max to -infinity because ANY maxumim will be larger than that
+		float aMin = INFINITY, aMax = -INFINITY;
+		float bMin = INFINITY, bMax = -INFINITY;
+
+		//Project points onto axis
+		for (int i = 0; i < a.size; i++)
 		{
-			tempPoints.push_back(dotProd(a.normals[i], a.vertices[j]));
+			float proj = dotProd(axis, a.vertices[i]);
+			aMin = fminf(proj, aMin);
+			aMax = fmaxf(proj, aMax);
 		}
-		for (int j = 0; j < a.size; j++)
+		for (int i = 0; i < b.size; i++)
 		{
-			tempPoints.push_back(dotProd(a.normals[i], b.vertices[j]));
+			float proj = dotProd(axis, b.vertices[i]);
+			bMin = fminf(proj, bMin);
+			bMax = fmaxf(proj, bMax);
 		}
 
-		//B-axis projection
-		for (int j = 0; j < a.size; j++)
+		//Find penetration depth; collision normal
+		float pDr, pDl, pD, H;
+		pDr = aMax - bMin;
+		pDl = bMax - aMin;
+		pD = fminf(pDr, pDl);
+
+		H = copysignf(1, pDl - pDr);
+
+		if (pD < out.penDepth)
 		{
-			tempPoints.push_back(dotProd(b.normals[i], a.vertices[j]));
+			out.penDepth = pD;
+			out.colNormal = axis * H;
 		}
-		for (int j = 0; j < a.size; j++)
-		{
-			tempPoints.push_back(dotProd(b.normals[i], b.vertices[j]));
-		}
-		allPoints.push_back(tempPoints);
 	}
 
 	return out;
 }
 
-CollisionData HullColAxis(const Hull & a, const Hull & b, const vec2 & normal, int index)
+CollisionDataSwept HullCollisionSwept(const Hull & a, const vec2 & dA, const Hull & b, const vec2 & db)
+{
+	CollisionDataSwept out;
+
+	return CollisionDataSwept();
+}
+
+CollisionData HullCollisionGroup(const Hull a[], unsigned aSize, const Hull b[], unsigned bSize)
 {
 	CollisionData out;
-
-	//Set min/max
-	float aMax = dotProd(normal, a.vertices[0]);
-	float aMin = dotProd(normal, a.vertices[0]);
-	float bMax = dotProd(normal, b.vertices[0]);
-	float bMin = dotProd(normal, b.vertices[0]);
-	//Project a-vertices
-	for (int i = 0; i < a.size; i++)
+	out.penDepth = INFINITY;	//Default value
+	for (int i = 0; i < aSize; i++)
 	{
-		float tempPos = dotProd(normal, a.vertices[i]);
-		if (tempPos > aMax)
-			aMax = tempPos;
-		else if (tempPos < aMin)
-			aMin = tempPos;
-	}
-
-	//Project b-vertices
-	for (int i = 0; i < b.size; i++)
-	{
-		float tempPos = dotProd(normal, b.vertices[i]);
-		if (tempPos > bMax)
-			bMax = tempPos;
-		else if (tempPos < bMin)
-			bMin = tempPos;
+		for (int j = 0; j < bSize; j++)
+		{
+			CollisionData temp = HullCollision(a[i], b[i]);
+			//Make temp the data with the smallest penetration depth
+			if (temp.penDepth < out.penDepth)
+				out = temp;
+		}
 	}
 
 	return out;
