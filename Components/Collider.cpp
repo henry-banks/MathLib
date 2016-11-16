@@ -26,9 +26,6 @@ Collider::Collider(const vec2 * verts, int size) : hull(verts, size)
 	//math-y math-ness
 	box.pos = (minv + maxv) / 2;
 	box.he = (maxv - minv) / 2;
-
-	//box = { {0,0},{3,3} };
-
 }
 
 
@@ -61,22 +58,21 @@ CollisionData ColliderCollision(const Transform & aT, const Collider & aC, const
 	return out;
 }
 
-CollisionData StaticResolution(Transform & aT, RigidBody & aR, const Collider & aC, Transform & bT, const Collider & bC)
+CollisionData StaticResolution(Transform & aT, RigidBody & aR, const Collider & aC, Transform & bT, const Collider & bC, float bounciness)
 {
-	//I'd normally call it 'out' but this was copy-psated from somewhere else
-	CollisionData results = ColliderCollision(aT, aC, bT, bC);
+	CollisionData out = ColliderCollision(aT, aC, bT, bC);
 
 	//If there is overlap, resolve collision
-	if (results.penDepth >= 0)
+	if (out.penDepth >= 0)
 	{
 		//Minimum Translation Vector
-		vec2 mtv = results.penDepth * results.colNormal;
+		vec2 mtv = out.penDepth * out.colNormal;
 		aT.pos -= mtv;
 
-		aR.velocity = reflect(aR.velocity, results.colNormal);
+		aR.velocity = reflect(aR.velocity, out.colNormal) * bounciness;
 	}
 
-	return CollisionData();
+	return out;
 }
 
 CollisionData DynamicResolution(Transform & aT, RigidBody & aR, const Collider & aC, Transform & bT, RigidBody & bR, const Collider & bC, float bounciness)
@@ -85,6 +81,23 @@ CollisionData DynamicResolution(Transform & aT, RigidBody & aR, const Collider &
 
 	if (out.penDepth >= 0)
 	{
+		////////////////////////////
+		//CORRECTION
+
+		//minimum translation vector
+		vec2 mtv = out.penDepth * out.colNormal;
+
+		//Magnitudes
+		float am = magnitude(aR.mass * aR.velocity);
+		float bm = magnitude(bR.mass * bR.velocity);
+		float cm = am + bm;
+
+		aT.pos -= mtv * (1 - am / cm);
+		bT.pos += mtv * (1 - bm / cm);
+
+		////////////////////////////
+		//RESOLUTION
+
 		vec2 &a = aR.velocity;
 		float &p = aR.mass;
 		
